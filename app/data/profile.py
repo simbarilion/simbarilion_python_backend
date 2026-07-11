@@ -206,7 +206,6 @@ PROFILE = {
             "categories": ["commercial", "integrations"],
             "github": "https://github.com/simbarilion/Oh-my-tea-demo",
             "demo": "https://simbarilion.github.io/Oh-my-tea-demo/",
-            "video_url": None,
             "readme_url": "/static/projects/oh-my-tea-overview.html",
         },
         {
@@ -232,7 +231,6 @@ PROFILE = {
             "categories": ["fullstack"],
             "github": "https://github.com/simbarilion/HabitLadder",
             "demo": None,
-            "video_url": None,
             "readme_url": "/static/projects/habit-ladder-overview.html",
         },
         {
@@ -245,7 +243,6 @@ PROFILE = {
             "categories": ["fullstack"],
             "github": "https://github.com/simbarilion/ElectroNet",
             "demo": None,
-            "video_url": None,
             "readme_url": "/static/projects/electronet-overview.html",
         },
         {
@@ -258,7 +255,6 @@ PROFILE = {
             "categories": ["etl"],
             "github": "https://github.com/simbarilion/HH_Vacancy_etl_airflow",
             "demo": None,
-            "video_url": None,
             "readme_url": "/static/projects/habr-career-etl-overview.html",
         },
         {
@@ -271,7 +267,6 @@ PROFILE = {
             "categories": ["etl"],
             "github": "https://github.com/simbarilion/PythonIdeasFromGitHub",
             "demo": None,
-            "video_url": None,
             "readme_url": "/static/projects/github-analytics-overview.html",
         },
     ],

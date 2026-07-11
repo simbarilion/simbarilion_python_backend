@@ -77,10 +77,11 @@ Tmdb() → requests + Django cache (TTL 1–12ч) → TmdbFilm dataclass
  ├── _get() — GET + retry(3) + backoff + MD5 cache_key
  └── _get_multipage() — пагинация
     </pre>
-    <p>Кэш по MD5(path + params), retry на 429/5xx, timeout 5s, language=ru-RU. Методы: candidate pool для рекомендаций, детали фильма, credits, search, фильмы по жанру.</p>
+    <p>Реализованы поиск фильмов, получение детальной информации, актёрского состава (credits), подбор фильмов по жанрам и формирование пула кандидатов для рекомендательной системы.</p>
+    <p>Для повышения производительности добавлено кэширование запросов (ключ по URL и параметрам с хешированием алгоритмом MD5), обработка повторных попыток при ошибках 429/5xx (retry), таймаут запросов 5 секунд и локализация данных на русском языке (language=ru-RU).</p>
 
     <h2>// Система рекомендаций</h2>
-    <p>Content-based filtering в три уровня: feature extraction → user profile → similarity scoring.</p>
+    <p>Content-based filtering система, включающая три уровня: feature extraction → user profile → similarity scoring.</p>
     <ul>
         <li><strong>Структурное сходство (70%)</strong> — взвешенный Jaccard: director &gt; actor &gt; genre &gt; keyword</li>
         <li><strong>Текстовое сходство (30%)</strong> — TF-IDF косинус по overview и tagline</li>
