@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initParticles();
     initHeroNetwork();
     initSkillBars();
+    initMediaModal();
 });
 
 function initNav() {
@@ -82,8 +83,8 @@ function initProjectFilters() {
             const filter = btn.dataset.filter;
 
             cards.forEach(card => {
-                const category = card.dataset.category;
-                const show = filter === 'all' || category === filter;
+                const categories = card.dataset.categories.split(' ');
+                const show = filter === 'all' || categories.includes(filter);
                 card.classList.toggle('project-card--hidden', !show);
                 if (show) {
                     card.classList.remove('reveal--visible');
@@ -190,6 +191,83 @@ function initHeroNetwork() {
         resize();
         createNodes();
         draw();
+    });
+}
+
+function initMediaModal() {
+    const modal = document.getElementById('media-modal');
+    if (!modal) return;
+
+    const titleEl = document.getElementById('media-modal-title');
+    const urlEl = document.getElementById('media-modal-url');
+    const contentEl = document.getElementById('media-modal-content');
+
+    function closeModal() {
+        modal.classList.remove('media-modal--open');
+        modal.setAttribute('aria-hidden', 'true');
+        contentEl.innerHTML = '';
+        document.body.style.overflow = '';
+    }
+
+    function openModal(title, type, src, pending) {
+        titleEl.textContent = title;
+        urlEl.textContent = type === 'readme' ? 'project.overview' : 'project.demo';
+        contentEl.innerHTML = '';
+
+        if (type === 'video') {
+            if (pending === 'true' || !src) {
+                contentEl.innerHTML = `
+                    <div class="media-placeholder">
+                        <span class="media-placeholder__icon">🎬</span>
+                        <p class="media-placeholder__text">Видеообзор скоро появится здесь</p>
+                        <span class="media-placeholder__hint">// запись в процессе</span>
+                    </div>`;
+            } else if (src.includes('youtube.com') || src.includes('youtu.be')) {
+                const embedUrl = toYouTubeEmbed(src);
+                contentEl.innerHTML = `<iframe src="${embedUrl}" allowfullscreen allow="autoplay; encrypted-media"></iframe>`;
+            } else {
+                contentEl.innerHTML = `<video controls playsinline src="${src}"></video>`;
+            }
+        } else if (type === 'readme' && src) {
+            contentEl.innerHTML = `<iframe src="${src}" title="${title}"></iframe>`;
+        }
+
+        modal.classList.add('media-modal--open');
+        modal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function toYouTubeEmbed(url) {
+        let id = '';
+        if (url.includes('youtu.be/')) {
+            id = url.split('youtu.be/')[1].split('?')[0];
+        } else if (url.includes('v=')) {
+            id = url.split('v=')[1].split('&')[0];
+        } else if (url.includes('/embed/')) {
+            return url;
+        }
+        return `https://www.youtube.com/embed/${id}`;
+    }
+
+    document.querySelectorAll('.media-open').forEach(btn => {
+        btn.addEventListener('click', () => {
+            openModal(
+                btn.dataset.mediaTitle,
+                btn.dataset.mediaType,
+                btn.dataset.mediaSrc,
+                btn.dataset.mediaPending || 'false'
+            );
+        });
+    });
+
+    modal.querySelectorAll('[data-media-close]').forEach(el => {
+        el.addEventListener('click', closeModal);
+    });
+
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && modal.classList.contains('media-modal--open')) {
+            closeModal();
+        }
     });
 }
 

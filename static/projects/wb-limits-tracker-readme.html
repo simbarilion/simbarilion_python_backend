@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WB Limits Tracker — обзор</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #060a12;
+            --text: #e2e8f0;
+            --muted: #94a3b8;
+            --cyan: #00d4ff;
+            --orange: #ff8c00;
+            --border: rgba(56, 189, 248, 0.15);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.65;
+            padding: 1.25rem 1.5rem 2rem;
+            font-size: 0.9rem;
+        }
+        h1 {
+            font-size: 1.35rem;
+            margin-bottom: 0.35rem;
+            background: linear-gradient(135deg, var(--text), var(--cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .subtitle { color: var(--muted); margin-bottom: 1.25rem; font-size: 0.85rem; }
+        h2 {
+            font-size: 0.95rem;
+            color: var(--cyan);
+            margin: 1.25rem 0 0.6rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        h3 { font-size: 0.85rem; color: var(--text); margin: 0.75rem 0 0.4rem; }
+        p { color: var(--muted); margin-bottom: 0.75rem; }
+        ul { padding-left: 1.1rem; color: var(--muted); margin-bottom: 0.75rem; }
+        li { margin-bottom: 0.35rem; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.78rem;
+            margin: 0.5rem 0 1rem;
+        }
+        th, td {
+            border: 1px solid var(--border);
+            padding: 0.45rem 0.6rem;
+            text-align: left;
+            vertical-align: top;
+        }
+        th { color: var(--cyan); background: rgba(0, 212, 255, 0.06); }
+        .tag {
+            display: inline-block;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            padding: 0.2rem 0.5rem;
+            margin: 0.15rem;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            color: var(--cyan);
+        }
+        pre {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.75rem;
+            overflow-x: auto;
+            color: var(--muted);
+            line-height: 1.5;
+            margin: 0.5rem 0;
+        }
+        .patterns { display: grid; gap: 0.35rem; }
+        .pattern {
+            padding: 0.5rem 0.65rem;
+            border-left: 2px solid var(--orange);
+            background: rgba(255, 140, 0, 0.05);
+            font-size: 0.82rem;
+        }
+        .pattern strong { color: var(--text); }
+        .highlight {
+            padding: 0.55rem 0.7rem;
+            border-left: 2px solid var(--cyan);
+            background: rgba(0, 212, 255, 0.04);
+            font-size: 0.82rem;
+            color: var(--muted);
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <h1>WB Limits Tracker</h1>
+    <p class="subtitle">Telegram-бот для отслеживания лимитов приёмки на складах Wildberries</p>
+
+    <p>Пользователь регистрируется, вводит API-ключ WB, выбирает склады и получает уведомления, когда появляются бесплатные или дешёвые слоты приёмки. Поддерживаются demo-режим (mock API) и production (webhook + real WB API).</p>
+
+    <h2>// Стек</h2>
+    <table>
+        <tr><th>Слой</th><th>Технологии</th></tr>
+        <tr><td>Язык</td><td>Python 3.12–3.14</td></tr>
+        <tr><td>Telegram</td><td>aiogram 3.x (async, FSM, inline/reply keyboards)</td></tr>
+        <tr><td>HTTP к WB API</td><td>httpx (async)</td></tr>
+        <tr><td>Валидация</td><td>Pydantic 2.x</td></tr>
+        <tr><td>Веб / webhook</td><td>Flask 3.x</td></tr>
+        <tr><td>Планировщик</td><td>APScheduler (AsyncIOScheduler)</td></tr>
+        <tr><td>БД</td><td>SQLite</td></tr>
+        <tr><td>Безопасность</td><td>cryptography (Fernet) для API-ключей</td></tr>
+        <tr><td>Тесты / качество</td><td>pytest, pytest-asyncio, black, isort, flake8, mypy</td></tr>
+        <tr><td>Зависимости</td><td>Poetry</td></tr>
+    </table>
+
+    <h2>// Архитектура</h2>
+    <pre>
+┌─────────────────────────────────────────────────────────────┐
+│                         run.py                              │
+│              USE_POLLING=1 → polling                        │
+│              USE_POLLING=0 → webhook + Flask                  │
+└──────────────────────────┬──────────────────────────────────┘
+                           │
+         ┌─────────────────┴─────────────────┐
+         ▼                                   ▼
+┌─────────────────┐                 ┌─────────────────┐
+│  aiogram Bot    │                 │  Flask (routes) │
+│  + Dispatcher   │                 │  webhook/admin  │
+└────────┬────────┘                 └────────┬────────┘
+         │                                   │
+         ▼                                   ▼
+┌─────────────────┐                 ┌─────────────────┐
+│   handlers/     │                 │ async_runtime   │
+│ commands        │                 │ (sync ↔ async)  │
+│ messages        │                 └─────────────────┘
+│ callbacks       │
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐      ┌─────────────────┐
+│   services.py   │─────▶│   wb/           │
+│ бизнес-логика   │      │ mock / real API │
+└────────┬────────┘      └─────────────────┘
+         │
+         ▼
+┌─────────────────┐      ┌─────────────────┐
+│ user_repository │─────▶│ security/       │
+│ SQLite CRUD     │      │ Fernet cipher   │
+└─────────────────┘      └─────────────────┘
+         ▲
+         │
+┌─────────────────┐
+│   scheduler     │─── авто-уведомления платным пользователям
+└─────────────────┘
+    </pre>
+
+    <h2>// Основные модули</h2>
+    <table>
+        <tr><th>Путь</th><th>Назначение</th></tr>
+        <tr><td><code>app/bot/</code></td><td>Фабрика bot/dispatcher, lifecycle hooks, polling runner</td></tr>
+        <tr><td><code>app/handlers/</code></td><td>Команды, reply-кнопки, inline-callbacks, FSM</td></tr>
+        <tr><td><code>app/wb/</code></td><td>Абстракция WB API: MockWbClient и RealWbClient</td></tr>
+        <tr><td><code>app/services.py</code></td><td>Проверка лимитов, форматирование сообщений</td></tr>
+        <tr><td><code>app/user_repository.py</code></td><td>CRUD пользователей с шифрованием API-ключей</td></tr>
+        <tr><td><code>app/scheduler.py</code></td><td>Периодическая рассылка уведомлений</td></tr>
+        <tr><td><code>app/routes.py</code></td><td>Webhook endpoint и admin-страница</td></tr>
+        <tr><td><code>app/security/</code></td><td>Шифрование/расшифровка API-ключей (Fernet)</td></tr>
+        <tr><td><code>tests/fixtures/</code></td><td>Mock-данные складов и коэффициентов</td></tr>
+    </table>
+
+    <h2>// Архитектурные решения</h2>
+    <ul>
+        <li><strong>Два режима WB API (WB_API_MODE)</strong> — mock (JSON-фикстуры, демо без аккаунта продавца) и real (реальные эндпоинты через httpx)</li>
+        <li><strong>Два режима запуска (USE_POLLING)</strong> — long polling для dev/demo и webhook через Flask для production</li>
+        <li><strong>Слой абстракции WbClient</strong> — бизнес-логика не зависит от конкретной реализации API</li>
+        <li><strong>FSM</strong> — пошаговая настройка: API-ключ → выбор складов через inline-кнопки</li>
+        <li><strong>Шифрование API-ключей</strong> — хранение в SQLite как <code>enc:</code> + Fernet, миграция legacy plaintext при старте</li>
+        <li><strong>Разделение sync/async</strong> — Flask синхронный, async_runtime прокидывает корутины aiogram в event loop</li>
+        <li><strong>Scheduler</strong> — авто-уведомления только для paid=1, выбранных складов и найденных доступных лимитов</li>
+    </ul>
+
+    <h2>// Паттерны проектирования</h2>
+    <table>
+        <tr><th>Паттерн</th><th>Где</th><th>Зачем</th></tr>
+        <tr><td>Strategy</td><td>mock_client / real_client + get_wb_client()</td><td>Одна бизнес-логика для mock и real; переключение через env</td></tr>
+        <tr><td>Factory Method</td><td>create_bot(), create_dispatcher(), get_wb_client()</td><td>Единая точка сборки зависимостей</td></tr>
+        <tr><td>Repository</td><td>user_repository.py</td><td>Handlers не знают про SQL</td></tr>
+        <tr><td>Service Layer</td><td>services.py</td><td>Сценарии проверки лимитов вынесены из хэндлеров</td></tr>
+        <tr><td>Adapter</td><td>async_runtime.py</td><td>Flask (sync) вызывает aiogram (async)</td></tr>
+        <tr><td>Template Method</td><td>wb/client.py (WbClient)</td><td>Общий контракт API + дефолтная validate_api_key()</td></tr>
+        <tr><td>FSM (State)</td><td>states.py, handlers</td><td>Onboarding без if-лабиринта</td></tr>
+        <tr><td>Router / Chain</td><td>handlers/</td><td>Команды, reply, callbacks разнесены по роутерам</td></tr>
+        <tr><td>Lifecycle Hooks</td><td>bot/lifecycle.py</td><td>Startup/shutdown: команды, scheduler, webhook</td></tr>
+    </table>
+
+    <h2>// Что интересного в реализации</h2>
+    <div class="patterns">
+        <div class="pattern"><strong>Один код — два способа доставки</strong> — handlers не зависят от polling или webhook</div>
+        <div class="pattern"><strong>Mock-слой как подсистема</strong> — те же JSON-фикстуры для CI, демо и pytest</div>
+        <div class="pattern"><strong>Валидация до сохранения</strong> — ключ проверяется до записи в БД</div>
+        <div class="pattern"><strong>Шифрование на границе репозитория</strong> — handlers работают с открытым ключом, repo шифрует прозрачно</div>
+        <div class="pattern"><strong>is_available в модели</strong> — правило WB (коэфф. 0 или 1 + allow_unload) инкапсулировано в Pydantic</div>
+        <div class="pattern"><strong>Два UX-канала</strong> — /check и reply-кнопка «Проверить лимиты» → одна логика</div>
+        <div class="pattern"><strong>FSM + приоритет хэндлеров</strong> — reply-кнопки до FSM-fallback, чтобы не застревать в сценарии</div>
+        <div class="pattern"><strong>Scheduler как потребитель</strong> — scheduled_check() вызывает check_limits_html() из services</div>
+        <div class="pattern"><strong>Pydantic на границе API</strong> — Warehouse, AcceptanceCoefficient с alias-полями WB JSON</div>
+        <div class="pattern"><strong>Логирование по модулям</strong> — logs/app.db.log, app.scheduler.log и т.д.</div>
+    </div>
+
+    <h2>// Принципы</h2>
+    <ul>
+        <li><strong>Separation of Concerns</strong> — Telegram UI, бизнес-логика, persistence и внешний API разделены</li>
+        <li><strong>Open/Closed</strong> — новый источник данных = ещё одна реализация WbClient</li>
+        <li><strong>Configuration over code</strong> — demo/production через env-переменные</li>
+        <li><strong>Testability first</strong> — mock-клиент, фикстуры, temp-БД в pytest, CI без секретов</li>
+    </ul>
+
+    <h2>// Возможности бота</h2>
+    <ul>
+        <li>Регистрация и валидация API-ключа Wildberries</li>
+        <li>Выбор складов через inline-чекбоксы</li>
+        <li>Ручная проверка лимитов (<code>/check</code>) и демо-режим (<code>/demo</code>)</li>
+        <li>Reply-клавиатура и меню команд</li>
+        <li>Автоматические уведомления по расписанию (подписка)</li>
+        <li>Admin-страница со статистикой (webhook-режим)</li>
+    </ul>
+
+    <h2>// Команды бота</h2>
+    <table>
+        <tr><th>Команда</th><th>Описание</th></tr>
+        <tr><td>/start</td><td>Регистрация и ввод API-ключа</td></tr>
+        <tr><td>/select</td><td>Выбор складов (inline)</td></tr>
+        <tr><td>/check</td><td>Проверить лимиты</td></tr>
+        <tr><td>/demo</td><td>Демо на mock-данных</td></tr>
+        <tr><td>/settings</td><td>Мои настройки</td></tr>
+        <tr><td>/subscribe</td><td>Подписка на уведомления</td></tr>
+        <tr><td>/reset_warehouses</td><td>Сбросить склады</td></tr>
+        <tr><td>/cancel</td><td>Отменить текущее действие</td></tr>
+    </table>
+
+    <h2>// Режимы запуска</h2>
+    <table>
+        <tr><th>Режим</th><th>USE_POLLING</th><th>WB_API_MODE</th><th>Назначение</th></tr>
+        <tr><td>Demo</td><td>1</td><td>mock</td><td>Разработка, CI, запись демо</td></tr>
+        <tr><td>Production</td><td>0</td><td>real</td><td>Webhook + реальный WB API</td></tr>
+    </table>
+
+    <h2>// Тестирование и CI</h2>
+    <p>GitHub Actions на push/PR: black, isort, flake8, mypy, pytest. Mock-клиент позволяет гонять CI без WB API и аккаунта продавца.</p>
+
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ElectroNet — обзор</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg: #060a12; --text: #e2e8f0; --muted: #94a3b8; --cyan: #00d4ff; --orange: #ff8c00; --border: rgba(56, 189, 248, 0.15); }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.65; padding: 1.25rem 1.5rem 2rem; font-size: 0.9rem; }
+        h1 { font-size: 1.35rem; margin-bottom: 0.35rem; background: linear-gradient(135deg, var(--text), var(--cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .subtitle { color: var(--muted); margin-bottom: 1.25rem; font-size: 0.85rem; }
+        h2 { font-size: 0.95rem; color: var(--cyan); margin: 1.25rem 0 0.6rem; font-family: 'JetBrains Mono', monospace; }
+        p { color: var(--muted); margin-bottom: 0.75rem; }
+        ul { padding-left: 1.1rem; color: var(--muted); margin-bottom: 0.75rem; }
+        li { margin-bottom: 0.35rem; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.78rem; margin: 0.5rem 0 1rem; }
+        th, td { border: 1px solid var(--border); padding: 0.45rem 0.6rem; text-align: left; vertical-align: top; }
+        th { color: var(--cyan); background: rgba(0, 212, 255, 0.06); }
+        .tag { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; padding: 0.2rem 0.5rem; margin: 0.15rem; border: 1px solid var(--border); border-radius: 4px; color: var(--cyan); }
+        pre { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; background: rgba(0, 0, 0, 0.35); border: 1px solid var(--border); border-radius: 8px; padding: 0.75rem; color: var(--muted); margin: 0.5rem 0; }
+    </style>
+</head>
+<body>
+    <h1>ElectroNet</h1>
+    <p class="subtitle">REST API для управления иерархической сетью продаж электроники</p>
+
+    <p>Демонстрация работы с self-referencing моделями, кастомными permission-классами DRF и ограничением бизнес-логики на уровне API. Трёхуровневая сеть: Завод → Розничная сеть → ИП.</p>
+
+    <h2>// Стек</h2>
+    <div>
+        <span class="tag">Django 5.2</span>
+        <span class="tag">DRF 3.16</span>
+        <span class="tag">PostgreSQL</span>
+        <span class="tag">DRF-spectacular</span>
+        <span class="tag">pytest-django</span>
+        <span class="tag">JWT</span>
+        <span class="tag">Docker / CI/CD</span>
+    </div>
+
+    <h2>// Модель данных</h2>
+    <pre>
+NetworkNode
+ ├── supplier → NetworkNode (self FK)
+ ├── address → Address
+ └── products → Product
+    </pre>
+    <table>
+        <tr><th>Сущность</th><th>Поля / особенности</th></tr>
+        <tr><td>NetworkNode</td><td>name, email, supplier (FK self), debt (Decimal), level (auto), address</td></tr>
+        <tr><td>Address</td><td>country, city, street, house_number</td></tr>
+        <tr><td>Product</td><td>name, model, release_date, node (FK)</td></tr>
+    </table>
+
+    <h2>// Иерархия сети</h2>
+    <table>
+        <tr><th>Уровень</th><th>Тип</th></tr>
+        <tr><td>0</td><td>Завод (без поставщика)</td></tr>
+        <tr><td>1</td><td>Розничная сеть (поставщик — завод)</td></tr>
+        <tr><td>2</td><td>ИП (поставщик — звено уровня 1)</td></tr>
+    </table>
+    <p>Уровень вычисляется автоматически по положению в иерархии, а не по названию.</p>
+
+    <h2>// Права и ограничения API</h2>
+    <ul>
+        <li>Доступ только для is_authenticated + is_active + is_staff</li>
+        <li>Поле <strong>debt</strong> — read-only в API (PUT/PATCH запрещены), управление через админку</li>
+        <li>Разделены List и Detail сериализаторы для оптимизации ответов</li>
+    </ul>
+
+    <h2>// API эндпоинты</h2>
+    <table>
+        <tr><th>Метод</th><th>URL</th><th>Описание</th></tr>
+        <tr><td>POST</td><td>/api/token/</td><td>JWT-токен</td></tr>
+        <tr><td>CRUD</td><td>/api/nodes/</td><td>Управление звеньями сети</td></tr>
+        <tr><td>GET</td><td>/swagger/, /redoc/</td><td>Документация API</td></tr>
+    </table>
+    <p>Фильтрация по стране (API), по городу и уровню (админка).</p>
+
+    <h2>// Админ-панель</h2>
+    <ul>
+        <li>Кликабельная ссылка на поставщика</li>
+        <li>Фильтр по городу</li>
+        <li>Admin action для очистки задолженности</li>
+        <li>Просмотр связанных продуктов</li>
+    </ul>
+
+    <h2>// Архитектурные решения</h2>
+    <ul>
+        <li>Self-relation ForeignKey для гибкой иерархии</li>
+        <li>Автовычисление level — целостность иерархии</li>
+        <li>Address вынесен в отдельную модель для масштабирования</li>
+        <li>Минимальные привилегии: только активные сотрудники</li>
+        <li>seed_data management command для тестовых данных</li>
+    </ul>
+</body>
+</html>

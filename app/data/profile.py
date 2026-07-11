@@ -54,7 +54,7 @@ PROFILE = {
             ),
             (
                 "Сейчас развиваю коммерческий проект в ООО «Экосистема Альфа» — платформу "
-                "автоматизации курьерской доставки. Параллельно веду pet-проекты с полным циклом: "
+                "автоматизации курьерской доставки. Параллельно веду собственные проекты с полным циклом: "
                 "от проектирования API до деплоя на VPS."
             ),
             (
@@ -72,6 +72,7 @@ PROFILE = {
         {"name": "Django REST Framework", "level": 78},
         {"name": "REST API", "level": 85},
         {"name": "PostgreSQL", "level": 78},
+        {"name": "SQLite", "level": 65},
         {"name": "Redis", "level": 72},
         {"name": "Celery", "level": 70},
         {"name": "Docker", "level": 78},
@@ -79,9 +80,14 @@ PROFILE = {
         {"name": "Pytest", "level": 72},
         {"name": "FastAPI", "level": 68},
         {"name": "Flask", "level": 55},
+        {"name": "httpx", "level": 68},
+        {"name": "requests", "level": 72},
+        {"name": "HTML / CSS", "level": 62},
+        {"name": "JavaScript / AJAX", "level": 58},
+        {"name": "Nginx", "level": 62},
+        {"name": "Beautiful Soup", "level": 48},
         {"name": "Telegram Bot API / aiogram", "level": 70},
         {"name": "Apache Airflow", "level": 52},
-        {"name": "JavaScript", "level": 58},
         {"name": "Linux / Bash", "level": 72},
     ],
     "education": [
@@ -155,7 +161,7 @@ PROFILE = {
         {
             "title": "Backend-разработчик (Python)",
             "period": "Март 2025 — настоящее время",
-            "company": "Pet & Freelance Projects",
+            "company": "Freelance & собственные проекты",
             "bullets": [
                 (
                     "Backend- и fullstack-приложения, REST API, автоматизация "
@@ -166,8 +172,10 @@ PROFILE = {
                     "CI/CD через GitHub Actions."
                 ),
                 (
-                    "Стек: Django, DRF, FastAPI, Flask, PostgreSQL, Redis, Celery, "
-                    "Airflow, aiogram, Docker, pytest."
+                    "Стек: Django, DRF, FastAPI, Flask, PostgreSQL, SQLite, Redis, Celery, "
+                    "APScheduler, Telegram Bot API, aiogram, requests, httpx, Apache Airflow, "
+                    "pytest, Sentry, Docker, Docker Compose, Nginx, Git, GitHub Actions, "
+                    "HTML, CSS, JavaScript, AJAX."
                 ),
             ],
         },
@@ -181,10 +189,11 @@ PROFILE = {
                 "и шифрование API-ключей."
             ),
             "tags": ["Python", "aiogram", "Flask", "httpx", "Pydantic", "SQLite", "pytest"],
-            "category": "commercial",
+            "categories": ["commercial", "integrations"],
             "github": "https://github.com/simbarilion/WBLimitsTracker",
             "demo": None,
-            "featured": True,
+            "video_url": None,
+            "readme_url": "/static/projects/wb-limits-tracker-readme.html",
         },
         {
             "title": "Oh! my tea — YML Feed",
@@ -194,10 +203,11 @@ PROFILE = {
                 "для Яндекс.Маркета и Яндекс.Директа, интерактивное демо."
             ),
             "tags": ["Python", "XML", "pytest", "JavaScript"],
-            "category": "commercial",
+            "categories": ["commercial", "integrations"],
             "github": "https://github.com/simbarilion/Oh-my-tea-demo",
             "demo": "https://simbarilion.github.io/Oh-my-tea-demo/",
-            "featured": True,
+            "video_url": None,
+            "readme_url": "/static/projects/oh-my-tea-overview.html",
         },
         {
             "title": "FilmDiary",
@@ -206,10 +216,11 @@ PROFILE = {
                 "система ролей, рекомендательная система, Telegram-интеграция, фоновые Celery-задачи, frontend на JS."
             ),
             "tags": ["Django", "DRF", "PostgreSQL", "Celery", "Redis", "JavaScript", "pytest", "Docker", "CI/CD"],
-            "category": "pet",
+            "categories": ["fullstack"],
             "github": "https://github.com/simbarilion/FilmDiary",
             "demo": None,
-            "featured": True,
+            "video_url": None,
+            "readme_url": "/static/projects/film-diary-overview.html",
         },
         {
             "title": "HabitLadder",
@@ -217,11 +228,12 @@ PROFILE = {
                 "Backend-сервис для управления привычками с системой ролей, Telegram-уведомлениями через Celery/Redis, "
                 "и покрытием тестами ~90%."
             ),
-            "tags": ["Django", "DRF", "Celery", "Redis", "Telegram", "Pytest"],
-            "category": "pet",
+            "tags": ["Django", "DRF", "Celery", "Redis", "Telegram", "pytest"],
+            "categories": ["fullstack"],
             "github": "https://github.com/simbarilion/HabitLadder",
             "demo": None,
-            "featured": False,
+            "video_url": None,
+            "readme_url": "/static/projects/habit-ladder-overview.html",
         },
         {
             "title": "ElectroNet",
@@ -229,41 +241,46 @@ PROFILE = {
                 "REST API для управления иерархической сетью продаж электроники. Self-referencing модели, "
                 "кастомные permissions DRF и контроль задолженности между звеньями сети."
             ),
-            "tags": ["Django", "DRF", "PostgreSQL", "Docker"],
-            "category": "pet",
+            "tags": ["Django", "DRF", "PostgreSQL", "pytest", "Docker"],
+            "categories": ["fullstack"],
             "github": "https://github.com/simbarilion/ElectroNet",
             "demo": None,
-            "featured": False,
+            "video_url": None,
+            "readme_url": "/static/projects/electronet-overview.html",
         },
         {
-            "title": "HH Vacancy ETL (Airflow)",
+            "title": "Habr Career Vacancy ETL",
             "description": (
                 "ETL-пайплайн на Apache Airflow для автоматического сбора вакансий Habr Career, "
                 "обработки данных, загрузки в PostgreSQL и уведомлений в Telegram."
             ),
-            "tags": ["Airflow", "PostgreSQL", "httpx", "Docker", "ETL"],
-            "category": "pet",
+            "tags": ["Python", "Apache Airflow", "PostgreSQL", "BeautifulSoup", "httpx", "Telegram Bot API", "Docker"],
+            "categories": ["etl"],
             "github": "https://github.com/simbarilion/HH_Vacancy_etl_airflow",
             "demo": None,
-            "featured": False,
+            "video_url": None,
+            "readme_url": "/static/projects/habr-career-etl-overview.html",
         },
         {
-            "title": "Python Ideas from GitHub",
+            "title": "GitHub Analytics",
             "description": (
                 "FastAPI-сервис поиска популярных GitHub-репозиториев с аналитикой: "
                 "асинхронный сбор данных, агрегация метрик, экспорт JSON/CSV и интеграция с Google Sheets Dashboard"
             ),
             "tags": ["FastAPI", "httpx", "Docker", "Google Sheets", "Pydantic"],
-            "category": "pet",
+            "categories": ["etl"],
             "github": "https://github.com/simbarilion/PythonIdeasFromGitHub",
             "demo": None,
-            "featured": False,
+            "video_url": None,
+            "readme_url": "/static/projects/github-analytics-overview.html",
         },
     ],
     "project_categories": [
         {"id": "all", "label": "Все"},
         {"id": "commercial", "label": "Коммерческие"},
-        {"id": "pet", "label": "Pet-проекты"},
+        {"id": "fullstack", "label": "Fullstack / Backend API"},
+        {"id": "etl", "label": "Data & ETL"},
+        {"id": "integrations", "label": "Integrations & Bots"},
     ],
     "contacts": {
         "location": "Барнаул, Россия (удалённо)",

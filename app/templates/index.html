@@ -191,7 +191,7 @@
             <span class="section__tag">// 04</span>
             <h2 class="section__title">Проекты</h2>
             <p class="section__subtitle">
-                Ключевые проекты из портфолио — pet-проекты и коммерческий опыт
+                Проекты по направлениям — от REST API и ETL до интеграций и ботов
             </p>
         </div>
         <div class="projects__filters" id="project-filters">
@@ -205,20 +205,15 @@
         <div class="projects__grid" id="projects-grid">
             {% for project in profile.projects %}
             <article
-                class="project-card glass{% if project.featured %} project-card--featured{% endif %}"
-                data-category="{{ project.category }}"
+                class="project-card glass"
+                data-categories="{{ project.categories | join(' ') }}"
             >
                 <div class="project-card__glow"></div>
                 <div class="project-card__header">
                     <h3 class="project-card__title">{{ project.title }}</h3>
                     <div class="project-card__badges">
-                    {% if project.featured %}
-                    <span class="project-card__badge">Featured</span>
-                    {% endif %}
-                    {% if project.category == 'commercial' %}
+                    {% if 'commercial' in project.categories %}
                     <span class="project-card__badge project-card__badge--commercial">Коммерческий</span>
-                    {% elif project.category == 'pet' %}
-                    <span class="project-card__badge project-card__badge--pet">Pet-проект</span>
                     {% endif %}
                     </div>
                 </div>
@@ -235,9 +230,21 @@
                     {% if project.demo %}
                     <a href="{{ project.demo }}" class="project-card__link project-card__link--demo" target="_blank" rel="noopener">Демо</a>
                     {% endif %}
-                    {% if not project.github and not project.demo %}
-                    <span class="project-card__placeholder">Скоро</span>
-                    {% endif %}
+                    <button
+                        type="button"
+                        class="project-card__link project-card__link--video media-open"
+                        data-media-type="video"
+                        data-media-title="{{ project.title }} — видеообзор"
+                        data-media-src="{{ project.video_url or '' }}"
+                        data-media-pending="{{ 'true' if not project.video_url else 'false' }}"
+                    >▶ Видео</button>
+                    <button
+                        type="button"
+                        class="project-card__link project-card__link--readme media-open"
+                        data-media-type="readme"
+                        data-media-title="{{ project.title }} — обзор проекта"
+                        data-media-src="{{ project.readme_url }}"
+                    >📄 Обзор</button>
                 </div>
             </article>
             {% endfor %}

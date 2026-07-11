@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HabitLadder — обзор</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg: #060a12; --text: #e2e8f0; --muted: #94a3b8; --cyan: #00d4ff; --orange: #ff8c00; --border: rgba(56, 189, 248, 0.15); }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.65; padding: 1.25rem 1.5rem 2rem; font-size: 0.9rem; }
+        h1 { font-size: 1.35rem; margin-bottom: 0.35rem; background: linear-gradient(135deg, var(--text), var(--cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .subtitle { color: var(--muted); margin-bottom: 1.25rem; font-size: 0.85rem; }
+        h2 { font-size: 0.95rem; color: var(--cyan); margin: 1.25rem 0 0.6rem; font-family: 'JetBrains Mono', monospace; }
+        p { color: var(--muted); margin-bottom: 0.75rem; }
+        ul { padding-left: 1.1rem; color: var(--muted); margin-bottom: 0.75rem; }
+        li { margin-bottom: 0.35rem; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.78rem; margin: 0.5rem 0 1rem; }
+        th, td { border: 1px solid var(--border); padding: 0.45rem 0.6rem; text-align: left; vertical-align: top; }
+        th { color: var(--cyan); background: rgba(0, 212, 255, 0.06); }
+        .tag { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; padding: 0.2rem 0.5rem; margin: 0.15rem; border: 1px solid var(--border); border-radius: 4px; color: var(--cyan); }
+        pre { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; background: rgba(0, 0, 0, 0.35); border: 1px solid var(--border); border-radius: 8px; padding: 0.75rem; color: var(--muted); margin: 0.5rem 0; }
+    </style>
+</head>
+<body>
+    <h1>HabitLadder</h1>
+    <p class="subtitle">Backend SPA для формирования полезных привычек</p>
+
+    <p>Backend-часть приложения на основе идей «Атомных привычек» Джеймса Клира: CRUD привычек, email-активация, Telegram-напоминания по таймзоне пользователя, строгая система прав.</p>
+
+    <h2>// Стек</h2>
+    <div>
+        <span class="tag">Django 5.2</span>
+        <span class="tag">DRF</span>
+        <span class="tag">PostgreSQL</span>
+        <span class="tag">Celery + Redis</span>
+        <span class="tag">Telegram Bot API</span>
+        <span class="tag">ZoneInfo</span>
+        <span class="tag">CORS</span>
+        <span class="tag">pytest (~90%)</span>
+        <span class="tag">Docker / CI/CD</span>
+    </div>
+
+    <h2>// Модели</h2>
+    <p><strong>Habit</strong> — place, habit_time, action, is_pleasant, related_habit, periodicity (1–7 дней), reward, duration (≤120 сек), is_public.</p>
+    <p><strong>CustomUser</strong> — email-логин, Telegram chat_id, timezone, статус активации.</p>
+
+    <h2>// Валидаторы</h2>
+    <ul>
+        <li>Нельзя одновременно указать reward и related_habit</li>
+        <li>Только приятные привычки могут быть связанной привычкой</li>
+        <li>duration ≤ 120 секунд, periodicity 1–7 дней</li>
+    </ul>
+
+    <h2>// Права доступа</h2>
+    <ul>
+        <li>Пользователь — CRUD только своих привычек</li>
+        <li>Публичные привычки — read-only для всех авторизованных</li>
+        <li>Суперпользователь — видит все привычки</li>
+    </ul>
+
+    <h2>// Celery-задачи</h2>
+    <table>
+        <tr><th>Задача</th><th>Логика</th></tr>
+        <tr><td>send_habit_reminder</td><td>Ежедневно: время по TZ пользователя + periodicity + дата создания → Telegram</td></tr>
+        <tr><td>send_activation_email</td><td>Ссылка активации при регистрации</td></tr>
+    </table>
+    <pre>«Время выполнить привычку: выпить стакан воды.
+Это займёт всего 2 минуты — ты справишься!
+После выполнения ты получишь награду: конфету»</pre>
+
+    <h2>// API и документация</h2>
+    <p>REST API с пагинацией и CORS для фронтенда. Swagger / Redoc: <code>/swagger/</code>, <code>/redoc/</code>.</p>
+
+    <h2>// Деплой</h2>
+    <p>Django + Gunicorn + Nginx + PostgreSQL + Redis + Celery Beat. CI/CD через GitHub Actions: lint → tests → Docker build → deploy на VPS.</p>
+
+    <h2>// Тестирование</h2>
+    <p>Покрытие ~90%. Flake8 100% (исключая миграции).</p>
+</body>
+</html>

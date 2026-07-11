@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Habr Career Vacancy ETL — обзор</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg: #060a12; --text: #e2e8f0; --muted: #94a3b8; --cyan: #00d4ff; --orange: #ff8c00; --border: rgba(56, 189, 248, 0.15); }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.65; padding: 1.25rem 1.5rem 2rem; font-size: 0.9rem; }
+        h1 { font-size: 1.35rem; margin-bottom: 0.35rem; background: linear-gradient(135deg, var(--text), var(--cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .subtitle { color: var(--muted); margin-bottom: 1.25rem; font-size: 0.85rem; }
+        h2 { font-size: 0.95rem; color: var(--cyan); margin: 1.25rem 0 0.6rem; font-family: 'JetBrains Mono', monospace; }
+        p { color: var(--muted); margin-bottom: 0.75rem; }
+        ul { padding-left: 1.1rem; color: var(--muted); margin-bottom: 0.75rem; }
+        li { margin-bottom: 0.35rem; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.78rem; margin: 0.5rem 0 1rem; }
+        th, td { border: 1px solid var(--border); padding: 0.45rem 0.6rem; text-align: left; vertical-align: top; }
+        th { color: var(--cyan); background: rgba(0, 212, 255, 0.06); }
+        .tag { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; padding: 0.2rem 0.5rem; margin: 0.15rem; border: 1px solid var(--border); border-radius: 4px; color: var(--cyan); }
+        pre { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; background: rgba(0, 0, 0, 0.35); border: 1px solid var(--border); border-radius: 8px; padding: 0.75rem; color: var(--muted); margin: 0.5rem 0; }
+    </style>
+</head>
+<body>
+    <h1>Habr Career Vacancy ETL</h1>
+    <p class="subtitle">Автоматический сбор вакансий с career.habr.com</p>
+
+    <p>ETL-пайплайн на Apache Airflow: регулярный сбор вакансий по ключевым словам, парсинг, загрузка в PostgreSQL и уведомления в Telegram об успехе и ошибках.</p>
+
+    <h2>// Стек</h2>
+    <div>
+        <span class="tag">Python 3.12</span>
+        <span class="tag">Apache Airflow 2.10</span>
+        <span class="tag">httpx (async)</span>
+        <span class="tag">PostgreSQL</span>
+        <span class="tag">psycopg2</span>
+        <span class="tag">Telegram Bot API</span>
+        <span class="tag">Docker Compose</span>
+        <span class="tag">Poetry</span>
+    </div>
+
+    <h2>// Структура проекта</h2>
+    <pre>
+dags/habr_career_etl.py     — DAG Airflow
+src/
+ ├── api/                    — парсер (JSON API)
+ ├── database/               — работа с БД
+ ├── models/                 — Vacancy, Employer
+ └── notifications/          — Telegram-уведомления
+run_etl.py                  — локальный запуск
+    </pre>
+
+    <h2>// Основные сущности</h2>
+    <table>
+        <tr><th>Класс</th><th>Назначение</th></tr>
+        <tr><td>Vacancy</td><td>id, название, url, зарплата, регион, компания</td></tr>
+        <tr><td>Employer</td><td>id, название, url</td></tr>
+        <tr><td>HabrCareerVacanciesSource</td><td>Источник данных (JSON API)</td></tr>
+        <tr><td>HabrCareerDBCreator</td><td>Создание и подготовка таблиц</td></tr>
+        <tr><td>HabrCareerDBWriter</td><td>Запись компаний и вакансий</td></tr>
+    </table>
+
+    <h2>// Функционал</h2>
+    <ul>
+        <li>Асинхронный сбор через официальный JSON API Habr Career</li>
+        <li>Парсинг зарплат (если только «от» — «до» = «от»)</li>
+        <li>Нормализованная структура: компании + вакансии</li>
+        <li>Очистка таблиц перед каждой загрузкой</li>
+        <li>Уведомления в Telegram об успехе и ошибках</li>
+        <li>Параметры DAG: ключевые слова и количество страниц</li>
+    </ul>
+
+    <h2>// Архитектурные решения</h2>
+    <ul>
+        <li>Разделение Extract → Load</li>
+        <li>Асинхронный сбор с asyncio.Semaphore (контроль параллельности)</li>
+        <li>JSON API вместо HTML-парсинга — стабильнее</li>
+        <li>Отдельные транзакции: подготовка таблиц и запись данных</li>
+        <li>Логирование, совместимое с Airflow UI</li>
+        <li>Конфигурация через .env, контейнеризация всего стека</li>
+    </ul>
+</body>
+</html>

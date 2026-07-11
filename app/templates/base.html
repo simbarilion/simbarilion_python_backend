@@ -52,6 +52,27 @@
         </div>
     </footer>
 
+    <div class="media-modal" id="media-modal" aria-hidden="true" role="dialog" aria-modal="true">
+        <div class="media-modal__backdrop" data-media-close></div>
+        <div class="media-modal__dialog">
+            <button class="media-modal__close" type="button" data-media-close aria-label="Закрыть">&times;</button>
+            <h3 class="media-modal__title" id="media-modal-title"></h3>
+            <div class="laptop">
+                <div class="laptop__screen">
+                    <div class="laptop__toolbar">
+                        <span class="dot dot--red"></span>
+                        <span class="dot dot--yellow"></span>
+                        <span class="dot dot--green"></span>
+                        <span class="laptop__url" id="media-modal-url">portfolio.demo</span>
+                    </div>
+                    <div class="laptop__content" id="media-modal-content"></div>
+                </div>
+                <div class="laptop__base"></div>
+                <div class="laptop__shadow"></div>
+            </div>
+        </div>
+    </div>
+
     <script src="/static/js/main.js"></script>
 </body>
 </html>

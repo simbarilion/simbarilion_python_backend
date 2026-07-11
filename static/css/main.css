@@ -1011,6 +1011,32 @@ img { max-width: 100%; display: block; }
     color: var(--accent-orange);
 }
 
+.project-card__link--video,
+.project-card__link--readme {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+}
+
+.project-card__link--video {
+    color: var(--accent-orange);
+}
+
+.project-card__link--video:hover {
+    color: var(--accent-cyan);
+}
+
+.project-card__link--readme {
+    color: var(--accent-purple);
+}
+
+.project-card__link--readme:hover {
+    color: var(--accent-cyan);
+}
+
 .project-card__placeholder {
     font-family: var(--font-mono);
     font-size: 0.8rem;
@@ -1189,4 +1215,177 @@ img { max-width: 100%; display: block; }
 .reveal--visible {
     opacity: 1;
     transform: translateY(0);
+}
+
+/* ---- Media modal (video / readme) ---- */
+.media-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--transition), visibility var(--transition);
+}
+
+.media-modal--open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.media-modal__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(5, 10, 20, 0.85);
+    backdrop-filter: blur(12px);
+}
+
+.media-modal__dialog {
+    position: relative;
+    width: min(920px, 96vw);
+    z-index: 1;
+    transform: translateY(24px) scale(0.97);
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.media-modal--open .media-modal__dialog {
+    transform: translateY(0) scale(1);
+}
+
+.media-modal__close {
+    position: absolute;
+    top: -2.5rem;
+    right: 0;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 2rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: color var(--transition);
+}
+
+.media-modal__close:hover {
+    color: var(--accent-cyan);
+}
+
+.media-modal__title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 1.25rem;
+    color: var(--text-primary);
+    text-align: center;
+}
+
+/* Laptop mockup */
+.laptop {
+    perspective: 1200px;
+}
+
+.laptop__screen {
+    background: #0d1520;
+    border: 1px solid var(--border);
+    border-radius: 14px 14px 0 0;
+    overflow: hidden;
+    box-shadow:
+        0 0 0 1px rgba(0, 212, 255, 0.08),
+        0 24px 60px rgba(0, 0, 0, 0.5),
+        0 0 40px rgba(0, 212, 255, 0.06);
+}
+
+.laptop__toolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0.75rem 1rem;
+    background: rgba(0, 0, 0, 0.45);
+    border-bottom: 1px solid var(--border);
+}
+
+.laptop__url {
+    margin-left: auto;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    padding: 0.25rem 0.75rem;
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 6px;
+    border: 1px solid var(--border);
+}
+
+.laptop__content {
+    aspect-ratio: 16 / 9;
+    background: #060a12;
+    position: relative;
+    overflow: hidden;
+}
+
+.laptop__content iframe,
+.laptop__content video {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+    object-fit: contain;
+    background: #000;
+}
+
+.laptop__base {
+    height: 14px;
+    margin: 0 auto;
+    width: 92%;
+    background: linear-gradient(180deg, #1a2535, #0a0f18);
+    border-radius: 0 0 12px 12px;
+    border: 1px solid var(--border);
+    border-top: none;
+}
+
+.laptop__shadow {
+    height: 24px;
+    margin: 0 auto;
+    width: 70%;
+    background: radial-gradient(ellipse, rgba(0, 212, 255, 0.15), transparent 70%);
+    filter: blur(8px);
+}
+
+.media-placeholder {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    padding: 2rem;
+    text-align: center;
+}
+
+.media-placeholder__icon {
+    font-size: 3rem;
+    opacity: 0.6;
+}
+
+.media-placeholder__text {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    max-width: 360px;
+}
+
+.media-placeholder__hint {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--accent-cyan);
+    opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+    .media-modal__close {
+        top: -2rem;
+    }
+
+    .laptop__content {
+        aspect-ratio: 4 / 3;
+    }
 }

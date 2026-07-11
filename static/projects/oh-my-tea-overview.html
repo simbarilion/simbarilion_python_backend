@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oh! my tea — обзор</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg: #060a12; --text: #e2e8f0; --muted: #94a3b8; --cyan: #00d4ff; --orange: #ff8c00; --border: rgba(56, 189, 248, 0.15); }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.65; padding: 1.25rem 1.5rem 2rem; font-size: 0.9rem; }
+        h1 { font-size: 1.35rem; margin-bottom: 0.35rem; background: linear-gradient(135deg, var(--text), var(--cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .subtitle { color: var(--muted); margin-bottom: 1.25rem; font-size: 0.85rem; }
+        h2 { font-size: 0.95rem; color: var(--cyan); margin: 1.25rem 0 0.6rem; font-family: 'JetBrains Mono', monospace; }
+        p { color: var(--muted); margin-bottom: 0.75rem; }
+        ul { padding-left: 1.1rem; color: var(--muted); margin-bottom: 0.75rem; }
+        li { margin-bottom: 0.35rem; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.78rem; margin: 0.5rem 0 1rem; }
+        th, td { border: 1px solid var(--border); padding: 0.45rem 0.6rem; text-align: left; vertical-align: top; }
+        th { color: var(--cyan); background: rgba(0, 212, 255, 0.06); }
+        .tag { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; padding: 0.2rem 0.5rem; margin: 0.15rem; border: 1px solid var(--border); border-radius: 4px; color: var(--cyan); }
+        pre { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; background: rgba(0, 0, 0, 0.35); border: 1px solid var(--border); border-radius: 8px; padding: 0.75rem; color: var(--muted); margin: 0.5rem 0; }
+    </style>
+</head>
+<body>
+    <h1>Oh! my tea — YML Feed</h1>
+    <p class="subtitle">Автоматизация генерации товарного YML-фида для магазина чая</p>
+
+    <p>Конвейер: каталог товаров → валидация по бизнес-правилам → отчёт (included/excluded) → YML XML для Яндекс.Маркета и Яндекс.Директа. Backend на Python + интерактивное демо на GitHub Pages.</p>
+
+    <h2>// Стек</h2>
+    <div>
+        <span class="tag">Python ≥3.12</span>
+        <span class="tag">ElementTree</span>
+        <span class="tag">Decimal</span>
+        <span class="tag">pytest (17 тестов)</span>
+        <span class="tag">Poetry</span>
+        <span class="tag">JavaScript (демо)</span>
+    </div>
+
+    <h2>// Архитектура</h2>
+    <pre>
+Каталог (товары + категории)
+        ↓
+   Валидация по бизнес-правилам
+        ↓
+   Отчёт (included / excluded + причины)
+        ↓
+   Сборка YML (валидный XML)
+        ↓
+   Публикация в рекламные площадки
+    </pre>
+    <pre>
+Backend (Python)                    Демо (GitHub Pages)
+validators → report                 index.html + app.js
+builders → YML XML        ──────►   data.json
+demo_export → JSON                  GitHub Pages
+    </pre>
+
+    <h2>// Модули Python</h2>
+    <table>
+        <tr><th>Компонент</th><th>Назначение</th></tr>
+        <tr><td>validators</td><td>Бизнес-правила, validate_product() с причинами отказа</td></tr>
+        <tr><td>builders</td><td>Фильтрация и сборка YML через ElementTree</td></tr>
+        <tr><td>report</td><td>Отчёт: included / excluded</td></tr>
+        <tr><td>demo_export</td><td>Экспорт JSON для интерактивного демо</td></tr>
+    </table>
+
+    <h2>// Правила валидации</h2>
+    <p>Товар попадает в фид, если <strong>все</strong> условия выполнены:</p>
+    <table>
+        <tr><th>Правило</th><th>Условие</th></tr>
+        <tr><td>Активность</td><td>is_active = true</td></tr>
+        <tr><td>Категория</td><td>существует и активна</td></tr>
+        <tr><td>Название</td><td>не пустое после trim</td></tr>
+        <tr><td>Цена</td><td>больше нуля</td></tr>
+        <tr><td>Изображение</td><td>URL начинается с http:// или https://</td></tr>
+    </table>
+    <p>При сборке XML: available по остатку, oldprice только если &gt; текущей, цены в формате 490.00, дата фида YYYY-MM-DD HH:MM.</p>
+
+    <h2>// Результат на демо-данных</h2>
+    <p>12 товаров → 6 в фиде, 6 отсеяно (6 типов причин: отключён, цена 0, нет фото, категория недоступна, нет названия, неверный URL).</p>
+
+    <h2>// Production-сценарий</h2>
+    <p>Интеграция в Django: endpoint <code>/feeds/yml.xml</code>, queryset из БД, регенерация по cron. Демо-репозиторий — визуализация логики для заказчика без доступа к исходному backend-коду.</p>
+
+    <h2>// Тестирование</h2>
+    <p>17 автотестов: YML-фид, отчёт, экспорт, edge cases (спецсимволы, oldprice, available).</p>
+</body>
+</html>

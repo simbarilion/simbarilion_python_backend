@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FilmDiary — обзор</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg: #060a12; --text: #e2e8f0; --muted: #94a3b8; --cyan: #00d4ff; --orange: #ff8c00; --border: rgba(56, 189, 248, 0.15); }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.65; padding: 1.25rem 1.5rem 2rem; font-size: 0.9rem; }
+        h1 { font-size: 1.35rem; margin-bottom: 0.35rem; background: linear-gradient(135deg, var(--text), var(--cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .subtitle { color: var(--muted); margin-bottom: 1.25rem; font-size: 0.85rem; }
+        h2 { font-size: 0.95rem; color: var(--cyan); margin: 1.25rem 0 0.6rem; font-family: 'JetBrains Mono', monospace; }
+        p { color: var(--muted); margin-bottom: 0.75rem; }
+        ul { padding-left: 1.1rem; color: var(--muted); margin-bottom: 0.75rem; }
+        li { margin-bottom: 0.35rem; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.78rem; margin: 0.5rem 0 1rem; }
+        th, td { border: 1px solid var(--border); padding: 0.45rem 0.6rem; text-align: left; vertical-align: top; }
+        th { color: var(--cyan); background: rgba(0, 212, 255, 0.06); }
+        .tag { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; padding: 0.2rem 0.5rem; margin: 0.15rem; border: 1px solid var(--border); border-radius: 4px; color: var(--cyan); }
+        pre { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; background: rgba(0, 0, 0, 0.35); border: 1px solid var(--border); border-radius: 8px; padding: 0.75rem; overflow-x: auto; color: var(--muted); line-height: 1.5; margin: 0.5rem 0; }
+    </style>
+</head>
+<body>
+    <h1>FilmDiary</h1>
+    <p class="subtitle">Fullstack-платформа персональных рекомендаций фильмов</p>
+
+    <p>Кино-трекер без социальной составляющей: пользователь смотрит → оценивает → получает рекомендации → планирует следующий просмотр. Данные полностью изолированы, личные оценки приоритетнее внешних рейтингов.</p>
+
+    <h2>// Стек</h2>
+    <div>
+        <span class="tag">Django 5.2</span>
+        <span class="tag">DRF 3.16</span>
+        <span class="tag">PostgreSQL</span>
+        <span class="tag">Celery + Redis</span>
+        <span class="tag">TMDB API</span>
+        <span class="tag">Telegram Bot API</span>
+        <span class="tag">JavaScript / AJAX</span>
+        <span class="tag">pytest (79%)</span>
+        <span class="tag">Docker / CI/CD</span>
+    </div>
+
+    <h2>// Архитектурные принципы</h2>
+    <ul>
+        <li>Разделение доменной логики и API-слоя</li>
+        <li>Сервисный слой для рекомендаций</li>
+        <li>Кэширование внешних запросов к TMDB</li>
+        <li>Идемпотентные Celery-задачи</li>
+        <li>Строгая модель прав доступа (User / Manager / Superuser / Blocked)</li>
+    </ul>
+
+    <h2>// Модели данных</h2>
+    <table>
+        <tr><th>Модель</th><th>Роль</th></tr>
+        <tr><td>CustomUser</td><td>Email-логин, аватар, часовой пояс, Telegram ID, блокировка</td></tr>
+        <tr><td>Film</td><td>Карточка фильма из TMDB (общая для всех пользователей)</td></tr>
+        <tr><td>Genre, Actor, Person</td><td>Справочники жанров, актёров, съёмочной группы</td></tr>
+        <tr><td>UserFilm</td><td>Связь пользователь–фильм (избранное, дата добавления)</td></tr>
+        <tr><td>Review</td><td>Отзыв с оценками по критериям (сюжет, актёры, режиссура, визуал, саундтрек)</td></tr>
+        <tr><td>CalendarEvent</td><td>Запланированный просмотр с датой и напоминанием</td></tr>
+        <tr><td>MessageFeedback</td><td>Обратная связь (в т.ч. от неавторизованных)</td></tr>
+    </table>
+
+    <h2>// Права доступа</h2>
+    <ul>
+        <li><strong>Гость</strong> — главная, обратная связь</li>
+        <li><strong>Пользователь</strong> — каталог, поиск, «мои фильмы», отзывы, календарь; CRUD только своих объектов</li>
+        <li><strong>Manager</strong> — просмотр данных пользователей, блокировка аккаунтов, менеджер-панель</li>
+        <li><strong>Superuser</strong> — полный доступ</li>
+        <li><strong>Заблокированный</strong> — вход запрещён, сессии удаляются, доступна только обратная связь</li>
+    </ul>
+
+    <h2>// TMDB API интеграция</h2>
+    <pre>
+Tmdb() → requests + Django cache (TTL 1–12ч) → TmdbFilm dataclass
+ ├── _get() — GET + retry(3) + backoff + MD5 cache_key
+ └── _get_multipage() — пагинация
+    </pre>
+    <p>Кэш по MD5(path + params), retry на 429/5xx, timeout 5s, language=ru-RU. Методы: candidate pool для рекомендаций, детали фильма, credits, search, фильмы по жанру.</p>
+
+    <h2>// Система рекомендаций</h2>
+    <p>Content-based filtering в три уровня: feature extraction → user profile → similarity scoring.</p>
+    <ul>
+        <li><strong>Структурное сходство (70%)</strong> — взвешенный Jaccard: director &gt; actor &gt; genre &gt; keyword</li>
+        <li><strong>Текстовое сходство (30%)</strong> — TF-IDF косинус по overview и tagline</li>
+        <li><strong>Жанровый бонус</strong> — совпадение с топ-жанрами пользователя</li>
+    </ul>
+    <p>Оптимизации: инвертированный индекс, top-K кандидатов, TF-IDF sparse matrix, FeatureCache, логарифмическое затухание старых просмотров, кэш рекомендаций на 24 ч.</p>
+
+    <h2>// DRF: calendar_events</h2>
+    <ul>
+        <li>CRUD API <code>/api/calendar_events/</code> — активные планы и архив</li>
+        <li>ManagerOrOwnerPermission, пагинация 12/стр, upcoming (48 ч)</li>
+        <li>Frontend: AJAX-загрузка, группировка по датам, модальные окна</li>
+        <li>Telegram-напоминания в 12:00–12:30 по локальной TZ пользователя</li>
+    </ul>
+
+    <h2>// Celery-задачи</h2>
+    <table>
+        <tr><th>Задача</th><th>Назначение</th></tr>
+        <tr><td>send_activation_email</td><td>Письмо активации при регистрации</td></tr>
+        <tr><td>recompute_user_recommendations</td><td>Ежедневно 01:00 UTC — пересчёт рекомендаций через TMDB</td></tr>
+        <tr><td>send_daily_reminders</td><td>Каждый час — напоминания о просмотрах на сегодня в Telegram</td></tr>
+    </table>
+
+    <h2>// Frontend (AJAX + JavaScript)</h2>
+    <p>Vanilla JS без полной перезагрузки страниц: добавление в списки, обновление карточек, динамический календарь через DRF, пагинация, модальные CRUD, поиск. Частичный SPA-подход поверх Django.</p>
+
+    <h2>// Тестирование</h2>
+    <p>Покрытие 79%: unit-тесты рекомендательной системы, сериализаторов, permissions, Celery-задач, бизнес-логики профиля.</p>
+</body>
+</html>
