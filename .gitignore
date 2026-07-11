@@ -47,3 +47,10 @@ docker-compose.override.yml
 # ================================
 tmp/
 temp/
+tmp_resume.pdf
+tmp_resume_text.txt
+
+# ================================
+# Memory Bank (internal docs)
+# ================================
+memory-bank/
