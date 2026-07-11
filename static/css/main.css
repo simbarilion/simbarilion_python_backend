@@ -906,7 +906,16 @@ img { max-width: 100%; display: block; }
 
 .project-card--featured {
     grid-column: span 1;
-    border-color: rgba(255, 140, 0, 0.3);
+    border-color: rgba(255, 140, 0, 0.35);
+    box-shadow: 0 0 24px rgba(255, 140, 0, 0.08);
+}
+
+.project-card--featured .project-card__glow {
+    background: radial-gradient(circle, rgba(255, 140, 0, 0.1), transparent 70%);
+}
+
+.project-card--featured:hover .project-card__glow {
+    opacity: 1;
 }
 
 .project-card__glow {
@@ -952,6 +961,12 @@ img { max-width: 100%; display: block; }
     color: var(--accent-orange);
     border-radius: 4px;
     border: 1px solid rgba(255, 140, 0, 0.3);
+}
+
+.project-card__badge--featured {
+    background: rgba(255, 140, 0, 0.18);
+    color: var(--accent-orange);
+    border-color: rgba(255, 140, 0, 0.45);
 }
 
 .project-card__badge--commercial {

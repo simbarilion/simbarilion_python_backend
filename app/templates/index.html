@@ -205,13 +205,16 @@
         <div class="projects__grid" id="projects-grid">
             {% for project in profile.projects %}
             <article
-                class="project-card glass"
+                class="project-card glass{% if project.featured | default(false) %} project-card--featured{% endif %}"
                 data-categories="{{ project.categories | join(' ') }}"
             >
                 <div class="project-card__glow"></div>
                 <div class="project-card__header">
                     <h3 class="project-card__title">{{ project.title }}</h3>
                     <div class="project-card__badges">
+                    {% if project.featured | default(false) %}
+                    <span class="project-card__badge project-card__badge--featured">Флагман</span>
+                    {% endif %}
                     {% if 'commercial' in project.categories %}
                     <span class="project-card__badge project-card__badge--commercial">Коммерческий</span>
                     {% endif %}
@@ -230,6 +233,7 @@
                     {% if project.demo %}
                     <a href="{{ project.demo }}" class="project-card__link project-card__link--demo" target="_blank" rel="noopener">Демо</a>
                     {% endif %}
+                    {% if project.video_url is defined %}
                     <button
                         type="button"
                         class="project-card__link project-card__link--video media-open"
@@ -238,6 +242,7 @@
                         data-media-src="{{ project.video_url or '' }}"
                         data-media-pending="{{ 'true' if not project.video_url else 'false' }}"
                     >▶ Видео</button>
+                    {% endif %}
                     <button
                         type="button"
                         class="project-card__link project-card__link--readme media-open"
@@ -277,13 +282,13 @@
                         </a>
                     </div>
                 </div>
-                {% if profile.contacts.phone %}
+                {% if profile.contacts.telegram %}
                 <div class="contact-item glass">
-                    <span class="contact-item__icon">📞</span>
+                    <span class="contact-item__icon">✈️</span>
                     <div>
-                        <span class="contact-item__label">Телефон</span>
-                        <a href="tel:{{ profile.contacts.phone }}" class="contact-item__value contact-item__value--link">
-                            {{ profile.contacts.phone }}
+                        <span class="contact-item__label">Telegram</span>
+                        <a href="{{ profile.contacts.telegram }}" class="contact-item__value contact-item__value--link" target="_blank" rel="noopener">
+                            @simbarilion
                         </a>
                     </div>
                 </div>

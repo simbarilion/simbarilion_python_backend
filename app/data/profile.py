@@ -218,6 +218,7 @@ PROFILE = {
             "categories": ["fullstack"],
             "github": "https://github.com/simbarilion/FilmDiary",
             "demo": None,
+            "featured": True,
             "video_url": None,
             "readme_url": "/static/projects/film-diary-overview.html",
         },
@@ -280,7 +281,6 @@ PROFILE = {
     "contacts": {
         "location": "Барнаул, Россия (удалённо)",
         "email": "nadezhdapopova13@yandex.ru",
-        "phone": "+7 (923) 643-03-97",
         "github": "https://github.com/simbarilion",
         "telegram": "https://t.me/simbarilion",
         "linkedin": None,
