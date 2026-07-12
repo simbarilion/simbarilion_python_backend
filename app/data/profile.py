@@ -1,4 +1,4 @@
-"""Данные профиля — редактируйте этот файл для обновления контента сайта."""
+﻿"""Данные профиля — редактируйте этот файл для обновления контента сайта."""
 
 PROFILE = {
     "name": "Надежда",
@@ -207,7 +207,7 @@ PROFILE = {
             "categories": ["commercial", "integrations"],
             "github": None,
             "demo": None,
-            "video_url": None,
+            "video_url": "https://rutube.ru/video/private/776c4e67778a2873b56f7195b9a60e10/?p=GLPCzLMA0pX8zV9LRdHeKg",
             "readme_url": "/static/projects/wb-limits-tracker-readme.html",
         },
         {
