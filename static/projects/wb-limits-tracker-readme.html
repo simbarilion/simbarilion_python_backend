@@ -92,6 +92,18 @@
             color: var(--muted);
             margin-bottom: 0.5rem;
         }
+        .arch-diagram {
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.75rem;
+            margin: 0.5rem 0 1rem;
+            overflow-x: auto;
+        }
+        .arch-diagram .mermaid {
+            display: flex;
+            justify-content: center;
+        }
     </style>
 </head>
 <body>
@@ -116,45 +128,55 @@
     </table>
 
     <h2>// Архитектура</h2>
-    <pre>
-┌─────────────────────────────────────────────────────────────┐
-│                         run.py                              │
-│              USE_POLLING=1 → polling                        │
-│              USE_POLLING=0 → webhook + Flask                │
-└──────────────────────────┬──────────────────────────────────┘
-                           │
-         ┌─────────────────┴─────────────────┐
-         ▼                                   ▼
-┌─────────────────┐                 ┌─────────────────┐
-│  aiogram Bot    │                 │  Flask (routes) │
-│  + Dispatcher   │                 │  webhook/admin  │
-└────────┬────────┘                 └────────┬────────┘
-         │                                   │
-         ▼                                   ▼
-┌─────────────────┐                 ┌─────────────────┐
-│   handlers/     │                 │ async_runtime   │
-│ commands        │                 │ (sync ↔ async)  │
-│ messages        │                 └─────────────────┘
-│ callbacks       │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐      ┌─────────────────┐
-│   services.py   │─────▶│   wb/           │
-│ бизнес-логика   │      │ mock / real API │
-└────────┬────────┘      └─────────────────┘
-         │
-         ▼
-┌─────────────────┐      ┌─────────────────┐
-│ user_repository │─────▶│ security/       │
-│ SQLite CRUD     │      │ Fernet cipher   │
-└─────────────────┘      └─────────────────┘
-         ▲
-         │
-┌─────────────────┐
-│   scheduler     │─── авто-уведомления платным пользователям
-└─────────────────┘
-    </pre>
+    <div class="arch-diagram">
+        <div class="mermaid">
+graph TD
+    subgraph Entry["Точка входа и режимы запуска"]
+        Run["run.py&lt;br/&gt;USE_POLLING=1 → polling&lt;br/&gt;USE_POLLING=0 → webhook + Flask"]
+    end
+
+    subgraph Core["Ядро бота (aiogram)"]
+        BotDisp["aiogram Bot + Dispatcher"]
+        Handlers["app/handlers/&lt;br/&gt;commands, messages, callbacks"]
+    end
+
+    subgraph HTTP["HTTP-слой (только для webhook)"]
+        Flask["Flask (routes)&lt;br/&gt;webhook endpoint, admin"]
+        AsyncRuntime["async_runtime&lt;br/&gt;sync ↔ async bridge"]
+    end
+
+    subgraph Business["Бизнес-логика и внешние API"]
+        Services["app/services.py&lt;br/&gt;бизнес-логика, оркестрация"]
+        Wb["app/wb/&lt;br/&gt;MockWbClient / RealWbClient&lt;br/&gt;WB_API_MODE"]
+    end
+
+    subgraph Data["Данные и безопасность"]
+        UserRepo["app/user_repository.py&lt;br/&gt;SQLite CRUD"]
+        Security["app/security/&lt;br/&gt;Fernet cipher"]
+    end
+
+    subgraph Background["Фоновые задачи"]
+        Scheduler["app/scheduler.py&lt;br/&gt;авто-уведомления для paid=1"]
+    end
+
+    Telegram[("Telegram API")]
+
+    Run --> BotDisp
+    Run --> Flask
+    Flask --> AsyncRuntime
+    AsyncRuntime -->|feed_update| BotDisp
+    BotDisp --> Handlers
+    Handlers --> Services
+    Services --> Wb
+    Services --> UserRepo
+    UserRepo --> Security
+    Scheduler --> Services
+    Scheduler --> UserRepo
+    Scheduler -->|bot.send_message| Telegram
+    Handlers -->|message.answer, callback.edit_text| Telegram
+    Run -.->|on startup: migrate_legacy_keys| UserRepo
+        </div>
+    </div>
 
     <h2>// Основные модули</h2>
     <table>
@@ -175,10 +197,10 @@
         <li><strong>Два режима WB API (WB_API_MODE)</strong> — mock (JSON-фикстуры, демо без аккаунта продавца) и real (реальные эндпоинты через httpx)</li>
         <li><strong>Два режима запуска (USE_POLLING)</strong> — long polling для dev/demo и webhook через Flask для production</li>
         <li><strong>Слой абстракции WbClient</strong> — бизнес-логика не зависит от конкретной реализации API</li>
-        <li><strong>FSM</strong> — пошаговая настройка: API-ключ → выбор складов через inline-кнопки</li>
-        <li><strong>Шифрование API-ключей</strong> — хранение в SQLite как <code>enc:</code> + Fernet, миграция legacy plaintext при старте</li>
-        <li><strong>Разделение sync/async</strong> — Flask синхронный, async_runtime прокидывает корутины aiogram в event loop</li>
-        <li><strong>Scheduler</strong> — авто-уведомления только для paid=1, выбранных складов и найденных доступных лимитов</li>
+        <li><strong>FSM</strong> — пошаговая настройка: ввод API-ключа → выбор складов через inline-кнопки</li>
+        <li><strong>Шифрование API-ключей</strong> — хранение ключей в SQLite как <code>enc:</code> + Fernet, миграция legacy plaintext при старте</li>
+        <li><strong>Разделение sync/async</strong> — Flask работает синхронно, async_runtime прокидывает корутины aiogram в event loop</li>
+        <li><strong>Scheduler</strong> — авто-уведомления только пользователям с подпиской (paid=1), выбранными складами и найденными доступными лимитами</li>
     </ul>
 
     <h2>// Паттерны проектирования</h2>
@@ -199,32 +221,32 @@
     <div class="patterns">
         <div class="pattern"><strong>Один код — два способа доставки</strong> — handlers не зависят от polling или webhook</div>
         <div class="pattern"><strong>Mock-слой как подсистема</strong> — те же JSON-фикстуры для CI, демо и pytest</div>
-        <div class="pattern"><strong>Валидация до сохранения</strong> — ключ проверяется до записи в БД</div>
-        <div class="pattern"><strong>Шифрование на границе репозитория</strong> — handlers работают с открытым ключом, repo шифрует прозрачно</div>
-        <div class="pattern"><strong>is_available в модели</strong> — правило WB (коэфф. 0 или 1 + allow_unload) инкапсулировано в Pydantic</div>
-        <div class="pattern"><strong>Два UX-канала</strong> — /check и reply-кнопка «Проверить лимиты» → одна логика</div>
-        <div class="pattern"><strong>FSM + приоритет хэндлеров</strong> — reply-кнопки до FSM-fallback, чтобы не застревать в сценарии</div>
-        <div class="pattern"><strong>Scheduler как потребитель</strong> — scheduled_check() вызывает check_limits_html() из services</div>
-        <div class="pattern"><strong>Pydantic на границе API</strong> — Warehouse, AcceptanceCoefficient с alias-полями WB JSON</div>
-        <div class="pattern"><strong>Логирование по модулям</strong> — logs/app.db.log, app.scheduler.log и т.д.</div>
+        <div class="pattern"><strong>Валидация до сохранения</strong> — API-ключ проверяется до записи в БД. Пользователь не попадает в «полусломанное» состояние с невалидным ключом</div>
+        <div class="pattern"><strong>Шифрование на границе репозитория</strong> — handlers работают с открытым ключом, user_repository прозрачно шифрует при записи и расшифровывает при чтении. Плюс автоматическая миграция старых plaintext-записей при запуске приложения</div>
+        <div class="pattern"><strong>is_available в модели</strong> — бизнес-правило доступности лимита WB (коэфф. 0 или 1 + allow_unload) инкапсулировано в Pydantic, форматтеры и scheduler не дублируют эту логику</div>
+        <div class="pattern"><strong>Два UX-канала на одни сценарии</strong> — Slash-команды (/check) и reply-кнопки («🔍 Проверить лимиты») ведут к одной бизнес-логике. Меню команд (set_my_commands) и reply-клавиатура дополняют друг друга</div>
+        <div class="pattern"><strong>FSM + приоритет хэндлеров</strong> — Кнопки нижнего меню регистрируются до FSM-fallback'ов, чтобы пользователь мог выйти из сценария выбора складов через «Отмена» или сразу нажать «Проверить лимиты», не застревая в состоянии</div>
+        <div class="pattern"><strong>Scheduler как отдельный «потребитель» доменной логики</strong> — scheduled_check() вызывает check_limits_html() из services и не дублирует код проверки лимитов</div>
+        <div class="pattern"><strong>Pydantic на границе внешнего API</strong> — ответы WB нормализуются в Pydantic-модели, а не пробрасываются в raw-словарь, Это защищает внутренний код от смены формата JSON и даёт типизацию для mypy</div>
+        <div class="pattern"><strong>Логирование по модулям</strong> — логирование вынесено в logs/ по модулям (app.db.log, app.scheduler.log и т.д.). Удобно для production и отладки, не засоряя stdout при polling</div>
     </div>
 
     <h2>// Принципы</h2>
     <ul>
         <li><strong>Separation of Concerns</strong> — Telegram UI, бизнес-логика, persistence и внешний API разделены</li>
-        <li><strong>Open/Closed</strong> — новый источник данных = ещё одна реализация WbClient</li>
-        <li><strong>Configuration over code</strong> — demo/production через env-переменные</li>
-        <li><strong>Testability first</strong> — mock-клиент, фикстуры, temp-БД в pytest, CI без секретов</li>
+        <li><strong>Open/Closed</strong> — новый источник данных WB можно добавить как ещё одну реализацию WbClient, не трогая handlers</li>
+        <li><strong>Configuration over code</strong> — demo/production переключаются env-переменными, без ветвлений в коде</li>
+        <li><strong>Testability first</strong> — mock-клиент, фикстуры, изолированная temp-БД в pytest, CI без secrets продавца</li>
     </ul>
 
     <h2>// Возможности бота</h2>
     <ul>
         <li>Регистрация и валидация API-ключа Wildberries</li>
         <li>Выбор складов через inline-чекбоксы</li>
-        <li>Ручная проверка лимитов (<code>/check</code>) и демо-режим (<code>/demo</code>)</li>
+        <li>Ручная проверка лимитов (<code>/check</code>) и демо-режим без реального ключа (<code>/demo</code>)</li>
         <li>Reply-клавиатура и меню команд</li>
         <li>Автоматические уведомления по расписанию (подписка)</li>
-        <li>Admin-страница со статистикой (webhook-режим)</li>
+        <li>Admin-страница со статистикой (в webhook-режиме)</li>
     </ul>
 
     <h2>// Команды бота</h2>
@@ -238,6 +260,8 @@
         <tr><td>/subscribe</td><td>Подписка на уведомления</td></tr>
         <tr><td>/reset_warehouses</td><td>Сбросить склады</td></tr>
         <tr><td>/cancel</td><td>Отменить текущее действие</td></tr>
+        <tr><td>/ping</td><td>Проверка связи</td></tr>
+        <tr><td>/help</td><td>Список команд</td></tr>
     </table>
 
     <h2>// Режимы запуска</h2>
@@ -248,7 +272,30 @@
     </table>
 
     <h2>// Тестирование и CI</h2>
-    <p>GitHub Actions на push/PR: black, isort, flake8, mypy, pytest. Mock-клиент позволяет гонять CI без WB API и аккаунта продавца.</p>
+    <p>GitHub Actions на push/PR: black, isort, flake8, mypy, pytest</p>
 
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'dark',
+            themeVariables: {
+                primaryColor: '#0d1b2a',
+                primaryTextColor: '#e2e8f0',
+                primaryBorderColor: '#00d4ff',
+                lineColor: '#38bdf8',
+                secondaryColor: '#0a0f1a',
+                tertiaryColor: '#060a12',
+                clusterBkg: 'rgba(0, 212, 255, 0.04)',
+                clusterBorder: 'rgba(0, 212, 255, 0.25)',
+                fontFamily: 'Inter, sans-serif',
+            },
+            flowchart: {
+                htmlLabels: true,
+                curve: 'basis',
+                padding: 12,
+            },
+        });
+    </script>
 </body>
 </html>
