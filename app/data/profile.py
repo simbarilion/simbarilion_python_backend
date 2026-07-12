@@ -182,6 +182,20 @@ PROFILE = {
     ],
     "projects": [
         {
+            "title": "FilmDiary",
+            "description": (
+                "Fullstack-платформа персональных рекомендаций фильмов. REST API (20+ эндпоинтов), "
+                "система ролей, рекомендательная система, Telegram-интеграция, фоновые Celery-задачи, frontend на JS."
+            ),
+            "tags": ["Django", "DRF", "PostgreSQL", "Celery", "Redis", "JavaScript", "pytest", "Docker", "CI/CD"],
+            "categories": ["fullstack"],
+            "github": "https://github.com/simbarilion/FilmDiary",
+            "demo": None,
+            "featured": True,
+            "video_url": None,
+            "readme_url": "/static/projects/film-diary-overview.html",
+        },
+        {
             "title": "WB Limits Tracker",
             "description": (
                 "Telegram-бот для мониторинга лимитов приёмки Wildberries. "
@@ -190,7 +204,7 @@ PROFILE = {
             ),
             "tags": ["Python", "aiogram", "Flask", "httpx", "Pydantic", "SQLite", "pytest"],
             "categories": ["commercial", "integrations"],
-            "github": "https://github.com/simbarilion/WBLimitsTracker",
+            "github": None,
             "demo": None,
             "video_url": None,
             "readme_url": "/static/projects/wb-limits-tracker-readme.html",
@@ -207,20 +221,6 @@ PROFILE = {
             "github": "https://github.com/simbarilion/Oh-my-tea-demo",
             "demo": "https://simbarilion.github.io/Oh-my-tea-demo/",
             "readme_url": "/static/projects/oh-my-tea-overview.html",
-        },
-        {
-            "title": "FilmDiary",
-            "description": (
-                "Fullstack-платформа персональных рекомендаций фильмов. REST API (20+ эндпоинтов), "
-                "система ролей, рекомендательная система, Telegram-интеграция, фоновые Celery-задачи, frontend на JS."
-            ),
-            "tags": ["Django", "DRF", "PostgreSQL", "Celery", "Redis", "JavaScript", "pytest", "Docker", "CI/CD"],
-            "categories": ["fullstack"],
-            "github": "https://github.com/simbarilion/FilmDiary",
-            "demo": None,
-            "featured": True,
-            "video_url": None,
-            "readme_url": "/static/projects/film-diary-overview.html",
         },
         {
             "title": "HabitLadder",

@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse
+from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
@@ -19,6 +19,11 @@ jinja_env = Environment(
 
 app = FastAPI(title="Portfolio", docs_url=None, redoc_url=None)
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+
+
+@app.get("/favicon.ico", include_in_schema=False)
+async def favicon():
+    return FileResponse(STATIC_DIR / "favicon.svg", media_type="image/svg+xml")
 
 
 @app.get("/", response_class=HTMLResponse)
