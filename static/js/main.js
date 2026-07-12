@@ -201,16 +201,11 @@ function initMediaModal() {
     const titleEl = document.getElementById('media-modal-title');
     const urlEl = document.getElementById('media-modal-url');
     const contentEl = document.getElementById('media-modal-content');
-    const fallbackEl = document.getElementById('media-modal-fallback');
 
     function closeModal() {
         modal.classList.remove('media-modal--open');
         modal.setAttribute('aria-hidden', 'true');
         contentEl.innerHTML = '';
-        if (fallbackEl) {
-            fallbackEl.hidden = true;
-            fallbackEl.removeAttribute('href');
-        }
         document.body.style.overflow = '';
     }
 
@@ -218,10 +213,6 @@ function initMediaModal() {
         titleEl.textContent = title;
         urlEl.textContent = type === 'readme' ? 'project.overview' : 'project.demo';
         contentEl.innerHTML = '';
-        if (fallbackEl) {
-            fallbackEl.hidden = true;
-            fallbackEl.removeAttribute('href');
-        }
 
         if (type === 'video') {
             if (pending === 'true' || !src) {
@@ -236,13 +227,8 @@ function initMediaModal() {
                 contentEl.innerHTML = `<iframe src="${embedUrl}" allowfullscreen allow="autoplay; encrypted-media"></iframe>`;
             } else if (src.includes('rutube.ru')) {
                 const embedUrl = toRutubeEmbed(src);
-                const watchUrl = toRutubeWatchUrl(src);
                 contentEl.innerHTML = `<iframe src="${embedUrl}" allow="clipboard-write; autoplay; encrypted-media" allowfullscreen webkitallowfullscreen mozallowfullscreen loading="lazy"></iframe>`;
                 urlEl.textContent = 'rutube.ru/demo';
-                if (fallbackEl) {
-                    fallbackEl.href = watchUrl;
-                    fallbackEl.hidden = false;
-                }
             } else {
                 contentEl.innerHTML = `<video controls playsinline src="${src}"></video>`;
             }
@@ -303,22 +289,6 @@ function initMediaModal() {
         }
 
         return `https://rutube.ru/play/embed/${videoId}/`;
-    }
-
-    function toRutubeWatchUrl(url) {
-        if (url.includes('/video/')) {
-            return url;
-        }
-
-        const match = url.match(/rutube\.ru\/play\/embed\/([a-f0-9]+)/i);
-        if (!match) {
-            return url;
-        }
-
-        const parsed = new URL(url, 'https://rutube.ru');
-        const accessKey = parsed.searchParams.get('p');
-        const base = `https://rutube.ru/video/private/${match[1]}/`;
-        return accessKey ? `${base}?p=${encodeURIComponent(accessKey)}` : base;
     }
 
     document.querySelectorAll('.media-open').forEach(btn => {

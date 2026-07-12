@@ -1344,25 +1344,6 @@ img { max-width: 100%; display: block; }
     background: #000;
 }
 
-.media-modal__fallback {
-    display: block;
-    margin-top: 1rem;
-    text-align: center;
-    font-family: var(--font-mono);
-    font-size: 0.85rem;
-    color: var(--accent-orange);
-    text-decoration: none;
-    transition: color var(--transition);
-}
-
-.media-modal__fallback:hover {
-    color: var(--accent-cyan);
-}
-
-.media-modal__fallback[hidden] {
-    display: none;
-}
-
 .laptop__base {
     height: 14px;
     margin: 0 auto;
