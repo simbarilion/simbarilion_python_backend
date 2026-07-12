@@ -24,9 +24,9 @@
 </head>
 <body>
     <h1>GitHub Analytics</h1>
-    <p class="subtitle">Поиск популярных GitHub-репозиториев с аналитикой и Google Sheets Dashboard</p>
+    <p class="subtitle">Система для поиска популярных GitHub-репозиториев с аналитикой и Google Sheets Dashboard</p>
 
-    <p>FastAPI-сервис для поиска репозиториев через GitHub Search API с агрегацией метрик, экспортом JSON/CSV и интеграцией с Google Sheets для интерактивного дашборда.</p>
+    <p>FastAPI-сервис для поиска репозиториев через GitHub Search API с агрегацией метрик, экспортом JSON/CSV и интеграцией с Google Sheets для интерактивного дашборда</p>
 
     <h2>// Стек</h2>
     <div>
@@ -48,15 +48,16 @@ app/
  ├── schemas.py          — Pydantic-схемы
  ├── storage.py          — сохранение JSON/CSV
  └── core/               — config, logging
-google_sheets/Code.gs     — Apps Script интеграция
+google_sheets/Code.gs    — Apps Script интеграция
     </pre>
 
     <h2>// FastAPI backend</h2>
     <ul>
-        <li>Поиск через GitHub Search API с фильтрами по языку и min_stars</li>
-        <li>Пагинация: до 100 на странице, максимум 1000 результатов</li>
+        <li>Поиск репозиториев через GitHub Search API с фильтрами по языку и min_stars</li>
+        <li>Пагинация: до 100 результатов на странице, максимум 1000 результатов всего</li>
         <li>Асинхронные запросы: httpx + asyncio.gather</li>
-        <li>Агрегация: total stars, average stars, top repository</li>
+        <li>Агрегация данных: total stars, average stars, top repository</li>
+        <li>Вывод данных по каждому репозиторию: название, автор, количество звезд (популярность проекта в мире), количество форков (сколько раз проект был скопирован другими разработчиками), URL репозитория (для быстрого доступа к проекту на GitHub)</li>
         <li>Экспорт в JSON и CSV</li>
     </ul>
 
@@ -74,9 +75,11 @@ google_sheets/Code.gs     — Apps Script интеграция
 
     <h2>// Google Sheets Dashboard</h2>
     <ul>
+        <li>Проект интегрирован с Google Sheets через Google Apps Script</li>
         <li>Меню GitHub Loader → Load repos (OPEN DASHBOARD / QUICK LOAD)</li>
-        <li>Apps Script выполняет HTTP-запрос к FastAPI, записывает данные в таблицу</li>
-        <li>Лист <strong>DATA</strong> — сырые данные репозиториев</li>
+        <li>2 режима загрузки данных: OPEN DASHBOARD - с выбором параметров поиска, QUICK LOAD - быстрая загрузка с параметрами по умолчанию</li>
+        <li>Apps Script выполняет HTTP-запрос к FastAPI backend, записывает данные в таблицу</li>
+        <li>Лист <strong>DATA</strong> — данные репозиториев, обработка ошибок API</li>
         <li>Лист <strong>DASHBOARD</strong> — метрики, Top 10 Stars, Top 10 Forks (автодиаграммы)</li>
     </ul>
 
