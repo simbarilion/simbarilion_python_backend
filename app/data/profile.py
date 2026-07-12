@@ -18,6 +18,7 @@ PROFILE = {
     ],
     "about": {
         "role": "Python Backend Developer",
+        "avatar": "/static/images/avatar.png",
         "facts": [
             {"label": "Город", "value": "Барнаул"},
             {"label": "Формат", "value": "Удалённо"},

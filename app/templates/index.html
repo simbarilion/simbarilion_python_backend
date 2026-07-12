@@ -89,9 +89,14 @@
         <div class="about__grid">
             <div class="about__card glass">
                 <div class="about__avatar">
-                    <div class="about__avatar-placeholder">
-                        <span>{{ profile.name[0] }}</span>
-                    </div>
+                    <img
+                        class="about__avatar-img"
+                        src="{{ profile.about.avatar }}"
+                        alt="{{ profile.full_name }}"
+                        width="160"
+                        height="160"
+                        loading="lazy"
+                    >
                     <div class="about__avatar-glow"></div>
                 </div>
                 <h3 class="about__role">{{ profile.about.role }}</h3>
