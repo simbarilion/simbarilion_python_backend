@@ -130,20 +130,21 @@
     <div class="container">
         <div class="section__header">
             <span class="section__tag">// 02</span>
-            <h2 class="section__title">Мой стэк</h2>
-            <p class="section__subtitle">Технологии, которые использую в проектах</p>
+            <h2 class="section__title">Стек и навыки</h2>
         </div>
         <div class="skills__grid">
-            {% for skill in profile.skills %}
-            <div class="skill-card glass">
-                <div class="skill-card__header">
-                    <span class="skill-card__name">{{ skill.name }}</span>
-                    <span class="skill-card__level">{{ skill.level }}%</span>
+            {% for group in profile.skill_groups %}
+            <article class="skill-group glass">
+                <h3 class="skill-group__title">{{ group.title }}</h3>
+                {% if group.note %}
+                <p class="skill-group__note">{{ group.note }}</p>
+                {% endif %}
+                <div class="skill-group__tags">
+                    {% for skill in group.skills %}
+                    <span class="skill-tag">{{ skill }}</span>
+                    {% endfor %}
                 </div>
-                <div class="skill-card__bar">
-                    <div class="skill-card__fill" style="--level: {{ skill.level }}%"></div>
-                </div>
-            </div>
+            </article>
             {% endfor %}
         </div>
     </div>

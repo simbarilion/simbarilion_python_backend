@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initProjectFilters();
     initParticles();
     initHeroNetwork();
-    initSkillBars();
     initMediaModal();
 });
 
@@ -50,7 +49,7 @@ function initNav() {
 
 function initScrollReveal() {
     const elements = document.querySelectorAll(
-        '.section__header, .about__card, .about__text, .skill-card, ' +
+        '.section__header, .about__card, .about__text, .skill-group, ' +
         '.timeline-card, .project-card, .contact-item, .contacts__actions'
     );
 
@@ -93,25 +92,6 @@ function initProjectFilters() {
             });
         });
     });
-}
-
-function initSkillBars() {
-    const bars = document.querySelectorAll('.skill-card__fill');
-    const observer = new IntersectionObserver(entries => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const fill = entry.target;
-                const level = fill.style.getPropertyValue('--level');
-                fill.style.width = '0';
-                requestAnimationFrame(() => {
-                    fill.style.width = level;
-                });
-                observer.unobserve(fill);
-            }
-        });
-    }, { threshold: 0.5 });
-
-    bars.forEach(bar => observer.observe(bar));
 }
 
 function initHeroNetwork() {
