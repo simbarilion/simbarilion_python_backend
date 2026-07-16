@@ -54,3 +54,8 @@ tmp_resume_text.txt
 # Memory Bank (internal docs)
 # ================================
 memory-bank/
+
+# ================================
+# Local helper scripts (not part of the app)
+# ================================
+scripts/
