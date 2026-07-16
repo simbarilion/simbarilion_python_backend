@@ -178,6 +178,9 @@
                     <h4 class="timeline-card__title">{{ job.title }}</h4>
                     <p class="timeline-card__period">{{ job.period }}</p>
                     <p class="timeline-card__company">{{ job.company }}</p>
+                    {% if job.stack | default(none) %}
+                    <p class="timeline-card__stack">{{ job.stack }}</p>
+                    {% endif %}
                     <ul class="timeline-card__list">
                         {% for item in job.bullets %}
                         <li>{{ item }}</li>

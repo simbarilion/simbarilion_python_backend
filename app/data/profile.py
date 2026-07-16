@@ -14,7 +14,7 @@ PROFILE = {
         {"value": "Python", "label": "основной язык"},
         {"value": "Django / DRF", "label": "веб-стек"},
         {"value": "FastAPI", "label": "API-фреймворк"},
-        {"value": "Flask", "label": "Микрофреймворк"},
+        {"value": "PostgreSQL", "label": "СУБД"},
     ],
     "about": {
         "role": "Python Backend Developer",
@@ -50,21 +50,13 @@ PROFILE = {
             ),
             (
                 "Есть опыт разработки fullstack-приложений, ETL-пайплайнов, Telegram-интеграций "
-                "и рекомендательных систем. Уверенно работаю с PostgreSQL, Docker, Celery, Redis, "
-                "Git и Linux."
+                "и рекомендательных систем. Уверенно работаю с PostgreSQL, Celery, Redis, Docker, Git."
             ),
             (
                 "Сейчас развиваю коммерческий проект в ООО «Экосистема Альфа» — платформу "
                 "автоматизации курьерской доставки. Параллельно веду собственные проекты с полным циклом: "
                 "от проектирования API до деплоя на VPS."
-            ),
-            (
-                "При написании кода руководствуюсь принципами SOLID, DRY и KISS: проектирую "
-                "масштабируемую архитектуру с разделением ответственности между слоями представлений, "
-                "сервисов и репозиториев, применяю архитектурные паттерны Repository, Service Layer "
-                "и Strategy. Разрабатываю код с учётом тестируемости, сопровождаемости, расширяемости "
-                "и долгосрочной поддержки."
-            ),
+            )
         ],
     },
     "skills": [
@@ -116,7 +108,7 @@ PROFILE = {
             "degree": "PG BootCamp Russia 2026",
             "period": "2026",
             "institution": "Сертификат участника",
-            "description": "Участие в в конференции по PostgreSQL (г. Москва).",
+            "description": "Участие в конференции по PostgreSQL (г. Москва).",
         },
     ],
     "experience": [
@@ -124,59 +116,46 @@ PROFILE = {
             "title": "Python Backend Developer",
             "period": "Апрель 2026 — настоящее время",
             "company": 'ООО «Экосистема Альфа», Москва (удалённо)',
+            "stack": (
+                "Python, Django, DRF, PostgreSQL, JWT, Redis, Celery, "
+                "Telegram API, Nginx, Git, Docker"
+            ),
             "bullets": [
                 (
-                    "Коммерческий проект: веб-приложение для автоматизации курьерской доставки"
+                    "Развиваю backend платформы автоматизации курьерской доставки: REST API, бизнес-логика заказов, сопровождение production"
                 ),
                 (
-                    "Стек: Python, Django, Django REST Framework, PostgreSQL, JWT, Redis, Celery, "
-                    "Telegram API, Nginx, Gunicorn, Swagger, Git, Docker"
+                    "Переработала подсистему геолокации курьеров: модели координат, API и обновление местоположения"
                 ),
                 (
-                    "Разрабатывала и сопровождала REST API"
+                    "Доработала жизненный цикл заказа: старт доставки и причины отмены — прозрачные статусы для клиентов и операций"
                 ),
                 (
-                    "Провела рефакторинг подсистемы геолокации: спроектировала новые модели хранения "
-                    "координат, реализовала API и бизнес-логику обновления местоположения курьеров"
+                    "Улучшила регистрацию/email-активацию; стабилизировала Celery на production"
                 ),
                 (
-                    "Доработала бизнес-логику обработки заказов: реализовала механизм начала доставки "
-                    "и разделение причин отмены"
+                    "Согласовываю API с frontend, участвую в code review и командной разработке в Git"
                 ),
-                (
-                    "Улучшила регистрацию и email-активацию пользователей, оптимизировала выполнение "
-                    "Celery-задач на production"
-                ),
-                (
-                    "Проанализировала причины нестабильной работы Celery и участвовала в повышении стабильности фоновых задач"
-                ),
-                (
-                    "Выполняла рефакторинг, исправляла production-баги и участвовала в проектировании новых решений"
-                ),
-                (
-                    "Взаимодействовала с frontend-разработчиками при проектировании и интеграции API, "
-                    "участвовала в code review и командной разработке с Git"
-                )
             ],
         },
         {
             "title": "Backend-разработчик (Python)",
             "period": "Март 2025 — настоящее время",
             "company": "Freelance & собственные проекты",
+            "stack": (
+                "Django/DRF, FastAPI, PostgreSQL, SQLite, Redis, Celery, "
+                "aiogram, requests, httpx, Apache Airflow, pytest, Sentry, "
+                "Docker, Nginx, GitHub Actions, HTML, CSS, JavaScript"
+            ),
             "bullets": [
                 (
-                    "Backend- и fullstack-приложения, REST API, автоматизация "
-                    "и интеграции с внешними сервисами."
+                    "Коммерческие задачи: боты (бот лимитов Wildberries), фиды (YML-фид для магазина чая), API, автоматизация рутины селлеров и магазинов"
                 ),
                 (
-                    "Проектирование БД, фоновые задачи, деплой на VPS, "
-                    "CI/CD через GitHub Actions."
+                    "Собственные проекты полного цикла — от API и БД до CI/CD и VPS"
                 ),
                 (
-                    "Стек: Django, DRF, FastAPI, Flask, PostgreSQL, SQLite, Redis, Celery, "
-                    "APScheduler, Telegram Bot API, aiogram, requests, httpx, Apache Airflow, "
-                    "pytest, Sentry, Docker, Docker Compose, Nginx, Git, GitHub Actions, "
-                    "HTML, CSS, JavaScript, AJAX."
+                    "Интеграции: маркетплейсы, Telegram, рекламные фиды; фоновые задачи и планировщики"
                 ),
             ],
         },
@@ -186,24 +165,24 @@ PROFILE = {
             "title": "FilmDiary",
             "description": (
                 "Fullstack-платформа персональных рекомендаций фильмов. REST API (20+ эндпоинтов), "
-                "система ролей, рекомендательная система, Telegram-интеграция, фоновые Celery-задачи, frontend на JS."
+                "RBAC, рекомендательная система, Telegram-интеграция, фоновые Celery-задачи, frontend на JS."
             ),
             "tags": ["Django", "DRF", "PostgreSQL", "Celery", "Redis", "JavaScript", "pytest", "Docker", "CI/CD"],
             "categories": ["fullstack"],
             "github": "https://github.com/simbarilion/FilmDiary",
             "demo": None,
             "featured": True,
-            "video_url": None,
+            "video_url": "https://rutube.ru/video/private/a11f5ac10ad0f569cdc9c8180dff018a/?p=1Li0EXLN8iab7NYugpTieQ",
             "readme_url": "/static/projects/film-diary-overview.html",
         },
         {
             "title": "WB Limits Tracker",
             "description": (
-                "Telegram-бот для мониторинга лимитов приёмки Wildberries. "
-                "Интеграция с API Wildberries, периодический опрос через APScheduler, уведомления пользователей "
-                "и шифрование API-ключей."
+                "Проблема. Селлеру нужно вовремя занимать бесплатные/дешёвые слоты приёмки WB — ручной мониторинг отнимает время и легко пропустить окно. "
+                "Решение. Telegram-бот с интеграцией WB API: мониторит лимиты, уведомляет о доступных слотах и хранит API-ключи в зашифрованном виде."
+                "Автоматический контроль складов без ручной проверки в кабинете продавца. Demo-режим и видеообзор для демонстрации без доступа к production-репозиторию."
             ),
-            "tags": ["Python", "aiogram", "Flask", "httpx", "Pydantic", "SQLite", "pytest"],
+            "tags": ["Python", "aiogram", "Flask", "httpx", "Pydantic", "SQLite", "pytest", "Telegram Bot API", "Wildberries API"],
             "categories": ["commercial", "integrations"],
             "github": None,
             "demo": None,
@@ -213,39 +192,15 @@ PROFILE = {
         {
             "title": "Oh! my tea — YML Feed",
             "description": (
-                "Сервис генерации YML-фида для магазина чая. "
-                "Валидация каталога по бизнес-правилам, отчёт об отсеянных позициях, сборка XML "
-                "для Яндекс.Маркета и Яндекс.Директа, интерактивное демо."
+                "Проблема. Для рекламы нужен валидный YML. В CMS содержатся товары без фото и единого формата описания, в закрытых категориях; ручная проверка перед выгрузкой даёт ошибки модерации. "
+                "Сервис автоматически валидирует товары по бизнес-правилам, отсеивает ошибки и собирает готовый XML + отчёт с причинами отказа. "
+                "Маркетолог получает готовый фид без ручной проверки перед каждой выгрузкой. Интерактивное демо для заказчика показывает, как сервис работает в реальном времени на тестовых данных."
             ),
             "tags": ["Python", "XML", "pytest", "JavaScript"],
             "categories": ["commercial", "integrations"],
             "github": "https://github.com/simbarilion/Oh-my-tea-demo",
             "demo": "https://simbarilion.github.io/Oh-my-tea-demo/",
             "readme_url": "/static/projects/oh-my-tea-overview.html",
-        },
-        {
-            "title": "HabitLadder",
-            "description": (
-                "Backend-сервис для управления привычками с системой ролей, Telegram-уведомлениями через Celery/Redis, "
-                "и покрытием тестами ~90%."
-            ),
-            "tags": ["Django", "DRF", "Celery", "Redis", "Telegram", "pytest"],
-            "categories": ["fullstack"],
-            "github": "https://github.com/simbarilion/HabitLadder",
-            "demo": None,
-            "readme_url": "/static/projects/habit-ladder-overview.html",
-        },
-        {
-            "title": "ElectroNet",
-            "description": (
-                "REST API для управления иерархической сетью продаж электроники. Self-referencing модели, "
-                "кастомные permissions DRF и контроль задолженности между звеньями сети."
-            ),
-            "tags": ["Django", "DRF", "PostgreSQL", "pytest", "Docker"],
-            "categories": ["fullstack"],
-            "github": "https://github.com/simbarilion/ElectroNet",
-            "demo": None,
-            "readme_url": "/static/projects/electronet-overview.html",
         },
         {
             "title": "Habr Career Vacancy ETL",
@@ -270,6 +225,30 @@ PROFILE = {
             "github": "https://github.com/simbarilion/PythonIdeasFromGitHub",
             "demo": None,
             "readme_url": "/static/projects/github-analytics-overview.html",
+        },
+        {
+            "title": "HabitLadder",
+            "description": (
+                "Backend-сервис для управления привычками с системой ролей, Telegram-уведомлениями через Celery/Redis, "
+                "и покрытием тестами ~90%."
+            ),
+            "tags": ["Django", "DRF", "Celery", "Redis", "Telegram", "pytest"],
+            "categories": ["fullstack"],
+            "github": "https://github.com/simbarilion/HabitLadder",
+            "demo": None,
+            "readme_url": "/static/projects/habit-ladder-overview.html",
+        },
+        {
+            "title": "ElectroNet",
+            "description": (
+                "REST API для управления иерархической сетью продаж электроники. Self-referencing модели, "
+                "кастомные permissions DRF и контроль задолженности между звеньями сети."
+            ),
+            "tags": ["Django", "DRF", "PostgreSQL", "pytest", "Docker"],
+            "categories": ["fullstack"],
+            "github": "https://github.com/simbarilion/ElectroNet",
+            "demo": None,
+            "readme_url": "/static/projects/electronet-overview.html",
         },
     ],
     "project_categories": [
