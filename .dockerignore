@@ -1,0 +1,30 @@
+# Git & IDE
+.git
+.gitignore
+.idea
+.vscode
+
+# Python
+__pycache__
+*.py[cod]
+*.pyo
+.venv
+venv
+ENV
+env
+.cache
+*.egg-info
+
+# Local / internal
+.env
+memory-bank
+scripts
+*.log
+logs
+tmp
+temp
+tmp_resume.pdf
+tmp_resume_text.txt
+
+# Docker
+docker-compose.override.yml
