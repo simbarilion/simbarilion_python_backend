@@ -26,5 +26,9 @@ temp
 tmp_resume.pdf
 tmp_resume_text.txt
 
+# Poetry (Docker uses requirements.txt)
+pyproject.toml
+poetry.lock
+
 # Docker
 docker-compose.override.yml
