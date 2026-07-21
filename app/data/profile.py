@@ -211,7 +211,10 @@ PROFILE = {
             "title": "FilmDiary",
             "description": (
                 "Fullstack-платформа персональных рекомендаций фильмов. REST API (20+ эндпоинтов), "
-                "RBAC, рекомендательная система, Telegram-интеграция, фоновые Celery-задачи, frontend на JS."
+                "RBAC, рекомендательная система, Telegram-интеграция, фоновые Celery-задачи, frontend на JS. "
+                "Адрес сервера с развернутым приложением: "
+                '<a href="https://filmdiary.creepysnakes.su/" target="_blank" rel="noopener">'
+                "https://filmdiary.creepysnakes.su/</a>"
             ),
             "tags": ["Django", "DRF", "PostgreSQL", "Celery", "Redis", "JavaScript", "pytest", "Docker", "CI/CD"],
             "categories": ["fullstack"],

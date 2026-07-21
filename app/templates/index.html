@@ -229,7 +229,7 @@
                     {% endif %}
                     </div>
                 </div>
-                <p class="project-card__desc">{{ project.description }}</p>
+                <p class="project-card__desc">{{ project.description | safe }}</p>
                 <div class="project-card__tags">
                     {% for tag in project.tags %}
                     <span class="tag">{{ tag }}</span>

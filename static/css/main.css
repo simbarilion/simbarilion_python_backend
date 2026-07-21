@@ -998,6 +998,18 @@ img { max-width: 100%; display: block; }
     margin-bottom: 1.25rem;
 }
 
+.project-card__desc a {
+    color: var(--accent-cyan);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    word-break: break-all;
+    transition: color var(--transition);
+}
+
+.project-card__desc a:hover {
+    color: var(--accent-orange);
+}
+
 .project-card__tags {
     display: flex;
     flex-wrap: wrap;
@@ -1164,6 +1176,8 @@ img { max-width: 100%; display: block; }
 
     .hero__visual {
         order: -1;
+        /* gap under fixed header — mobile only */
+        padding-top: 0.5cm;
     }
 
     .about__grid {
@@ -1216,8 +1230,12 @@ img { max-width: 100%; display: block; }
     }
 
     .nav__link--cta {
-        margin-top: 0.5rem;
+        margin-top: 0.75rem;
+        padding: 0.5rem 1.25rem;
         text-align: center;
+        /* restore full cyan border (overridden by .nav__link border-bottom) */
+        border: 1px solid var(--accent-cyan);
+        border-radius: 8px;
     }
 
     .hero__stats {
@@ -1250,7 +1268,7 @@ img { max-width: 100%; display: block; }
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 1.5rem;
+    padding: 1.5rem 1.5rem 2.5rem;
     opacity: 0;
     visibility: hidden;
     transition: opacity var(--transition), visibility var(--transition);
@@ -1313,6 +1331,7 @@ img { max-width: 100%; display: block; }
 .laptop__screen {
     background: #0d1520;
     border: 1px solid var(--border);
+    border-bottom: none;
     border-radius: 14px 14px 0 0;
     overflow: hidden;
     box-shadow:
@@ -1359,13 +1378,17 @@ img { max-width: 100%; display: block; }
 }
 
 .laptop__base {
-    height: 14px;
+    /* ~1cm taller bottom bezel, rounded like the top */
+    height: 38px;
     margin: 0 auto;
-    width: 92%;
-    background: linear-gradient(180deg, #1a2535, #0a0f18);
-    border-radius: 0 0 12px 12px;
+    width: 100%;
+    background: linear-gradient(180deg, #1a2535 0%, #121a28 55%, #0a0f18 100%);
+    border-radius: 0 0 14px 14px;
     border: 1px solid var(--border);
     border-top: none;
+    box-shadow:
+        0 0 0 1px rgba(0, 212, 255, 0.08),
+        0 16px 40px rgba(0, 0, 0, 0.35);
 }
 
 .laptop__shadow {
