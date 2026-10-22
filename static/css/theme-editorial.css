@@ -495,32 +495,47 @@ body.theme-editorial {
 .theme-editorial .section--alt {
     position: relative;
     overflow: hidden;
-    /* blueprint / technical grid */
     background-color: var(--bg-secondary);
-    background-image:
-        linear-gradient(rgba(28, 25, 23, 0.045) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(28, 25, 23, 0.045) 1px, transparent 1px);
-    background-size: 28px 28px;
-    background-position: center top;
+    background-image: none;
 }
 
+/* PCB as ghost layer — architectural wash, not a loud texture */
 .theme-editorial .section--alt::before {
     content: "";
     position: absolute;
     inset: 0;
     pointer-events: none;
     z-index: 0;
-    /* softer major grid every 4 cells */
-    background-image:
-        linear-gradient(rgba(28, 25, 23, 0.07) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(28, 25, 23, 0.07) 1px, transparent 1px);
-    background-size: 112px 112px;
+    background-image: url("/static/images/bg-pcb.svg");
+    background-size: 520px 520px;
+    background-repeat: repeat;
     background-position: center top;
+    opacity: 0.1;
+}
+
+.theme-editorial .section--alt::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background: radial-gradient(
+        ellipse 65% 45% at 100% 0%,
+        rgba(232, 89, 12, 0.035),
+        transparent 55%
+    );
 }
 
 .theme-editorial .section--alt > .container {
     position: relative;
     z-index: 1;
+}
+
+@media (max-width: 768px) {
+    .theme-editorial .section--alt::before {
+        background-size: 400px 400px;
+        opacity: 0.08;
+    }
 }
 
 /* Contacts: roomy section; precise scroll handled in JS so footer fits in view */
@@ -947,25 +962,19 @@ body.theme-editorial {
         grid-template-columns: 1fr;
     }
 
+    /* Bauhaus column only works as a vertical strip — hide when stacked */
     .theme-editorial .hero__bauhaus {
-        flex-direction: row;
-        width: 100%;
-        height: 72px;
+        display: none;
     }
 
-    .theme-editorial .hero__bauhaus-cell {
-        min-height: 72px;
+    /* Background circles clutter small screens */
+    .theme-editorial .bg-geo {
+        display: none;
     }
 
     .theme-editorial .header,
     .theme-editorial main {
         border-left-width: 4px;
-    }
-
-    .theme-editorial .bg-geo__ring--1 {
-        width: 120px;
-        height: 120px;
-        opacity: 0.7;
     }
 
     .theme-editorial .anno__label {
