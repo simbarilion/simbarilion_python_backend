@@ -1,17 +1,35 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const isEditorial = document.body.classList.contains('theme-editorial');
     initNav();
     initScrollReveal();
     initProjectFilters();
-    initParticles();
-    initHeroNetwork();
+    if (!isEditorial) {
+        initParticles();
+        initHeroNetwork();
+    }
     initMediaModal();
+    if (isEditorial && window.location.hash === '#contacts') {
+        requestAnimationFrame(() => scrollContactsWithFooter(false));
+    }
 });
+
+/** Scroll so Contacts fills the view and the footer sits fully in frame. */
+function scrollContactsWithFooter(smooth = true) {
+    const footer = document.querySelector('.footer');
+    if (!footer) {
+        document.getElementById('contacts')?.scrollIntoView({ behavior: smooth ? 'smooth' : 'auto' });
+        return;
+    }
+    const top = Math.max(0, footer.offsetTop + footer.offsetHeight - window.innerHeight);
+    window.scrollTo({ top, behavior: smooth ? 'smooth' : 'auto' });
+}
 
 function initNav() {
     const header = document.getElementById('header');
     const toggle = document.getElementById('nav-toggle');
     const menu = document.getElementById('nav-menu');
     const links = menu.querySelectorAll('.nav__link');
+    const isEditorial = document.body.classList.contains('theme-editorial');
 
     window.addEventListener('scroll', () => {
         header.classList.toggle('header--scrolled', window.scrollY > 50);
@@ -23,11 +41,29 @@ function initNav() {
     });
 
     links.forEach(link => {
-        link.addEventListener('click', () => {
+        link.addEventListener('click', (event) => {
             menu.classList.remove('nav__menu--open');
             toggle.setAttribute('aria-expanded', 'false');
+
+            if (isEditorial && link.getAttribute('href') === '#contacts') {
+                event.preventDefault();
+                history.pushState(null, '', '#contacts');
+                scrollContactsWithFooter(true);
+            }
         });
     });
+
+    // Also catch in-page "Связаться" buttons that go to #contacts
+    if (isEditorial) {
+        document.querySelectorAll('a[href="#contacts"]').forEach(link => {
+            if (link.classList.contains('nav__link')) return;
+            link.addEventListener('click', (event) => {
+                event.preventDefault();
+                history.pushState(null, '', '#contacts');
+                scrollContactsWithFooter(true);
+            });
+        });
+    }
 
     const sections = document.querySelectorAll('section[id]');
     const observer = new IntersectionObserver(entries => {
