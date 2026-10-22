@@ -84,9 +84,15 @@ function initNav() {
 }
 
 function initScrollReveal() {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const isEditorial = document.body.classList.contains('theme-editorial');
+    /* Editorial: whole sections once (quieter). Dark theme: per-block cards. */
     const elements = document.querySelectorAll(
-        '.section__header, .about__card, .about__text, .skill-group, ' +
-        '.timeline-card, .project-card, .contact-item, .contacts__actions'
+        isEditorial
+            ? 'main .section'
+            : '.section__header, .about__card, .about__text, .skill-group, ' +
+              '.timeline-card, .project-card, .contact-item, .contacts__actions'
     );
 
     elements.forEach(el => el.classList.add('reveal'));
@@ -98,7 +104,10 @@ function initScrollReveal() {
                 observer.unobserve(entry.target);
             }
         });
-    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    }, {
+        threshold: isEditorial ? 0.12 : 0.1,
+        rootMargin: isEditorial ? '0px 0px -8% 0px' : '0px 0px -40px 0px',
+    });
 
     elements.forEach(el => observer.observe(el));
 }
