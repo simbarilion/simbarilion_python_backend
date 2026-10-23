@@ -22,7 +22,7 @@ PROFILE = {
         "facts": [
             {"label": "Город", "value": "Барнаул"},
             {"label": "Формат", "value": "Удалённо"},
-            {"label": "Образование", "value": "Высшее + SkyPro + ModulDev"},
+            {"label": "Образование", "value": "Высшее + SkyPro"},
             {
                 "label": "Почта",
                 "value": "nadezhdapopova13@yandex.ru",
@@ -116,6 +116,7 @@ PROFILE = {
                 "Uvicorn",
                 "Git",
                 "GitHub Actions",
+                "GitLab CI/CD",
                 "Pytest",
                 "Linux / Bash",
             ],
