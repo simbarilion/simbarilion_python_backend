@@ -658,6 +658,21 @@ body.theme-editorial {
     color: var(--text-secondary);
 }
 
+.theme-editorial .timeline-card__project {
+    margin-top: 1.15rem;
+}
+
+.theme-editorial .timeline-card__project:first-of-type {
+    margin-top: 0.85rem;
+}
+
+.theme-editorial .timeline-card__project-label {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--ink-deep);
+    margin: 0 0 0.45rem;
+}
+
 .theme-editorial .timeline-card__stack {
     font-family: var(--font-mono);
     font-size: 0.8rem;

@@ -22,7 +22,7 @@ PROFILE = {
         "facts": [
             {"label": "Город", "value": "Барнаул"},
             {"label": "Формат", "value": "Удалённо"},
-            {"label": "Образование", "value": "Высшее + SkyPro"},
+            {"label": "Образование", "value": "Высшее + SkyPro + ModulDev"},
             {
                 "label": "Почта",
                 "value": "nadezhdapopova13@yandex.ru",
@@ -41,20 +41,27 @@ PROFILE = {
         ],
         "bio": [
             (
-                "Python Backend-разработчик (Django / FastAPI): REST API, бизнес-логика, интеграции с внешними сервисами и фоновые процессы."
+                "Python Backend-разработчик (Django / FastAPI): REST API, бизнес-логика, "
+                "интеграции с внешними сервисами и фоновые процессы."
             ),
             (
-                "Работаю с PostgreSQL, Celery, Redis, Docker, Git. Есть опыт разработки fullstack-приложений и ETL-пайплайнов."
+                "Работаю с PostgreSQL, SQLAlchemy, Celery, Redis, Kafka (aiokafka), Docker, Git. "
+                "Есть опыт разработки fullstack-приложений и ETL-пайплайнов."
             ),
             (
-                "Использую AI-инструменты (Cursor, GitHub Copilot и ChatGPT) как часть рабочего процесса: "
-                "для ускорения разработки и исследования, с обязательной проверкой и доработкой решений."
+                "Прошла backend-стажировку ModulDev в Модульбанке: спроектировала и собрала единый банковский контур: "
+                "API, транзакции, идемпотентность, внешние интеграции, обработка сбоев и наблюдаемость."
             ),
             (
-                "Сейчас — коммерческий проект в ООО «Экосистема Альфа»: платформа автоматизации курьерской доставки. "
+                "Сейчас — коммерческий проект в ООО «Экосистема Альфа»: backend PWA-сервиса для владельцев питомцев. "
+                "Ранее в той же компании — платформа автоматизации курьерской доставки."
             ),
             (
                 "Параллельно веду собственные и клиентские проекты полного цикла — от проектирования API до production."
+            ),
+            (
+                "Использую AI-инструменты (Cursor, GitHub Copilot и ChatGPT) как часть рабочего процесса: "
+                "для ускорения разработки и исследования, с обязательной верификацией результата и доработкой решений."
             ),
         ],
     },
@@ -69,6 +76,7 @@ PROFILE = {
                 "FastAPI",
                 "Flask",
                 "REST API",
+                "SQLAlchemy",
                 "Pydantic",
             ],
         },
@@ -79,6 +87,7 @@ PROFILE = {
                 "PostgreSQL",
                 "SQLite",
                 "Redis",
+                "Kafka / aiokafka",
                 "Celery",
                 "APScheduler",
                 "Apache Airflow",
@@ -104,6 +113,7 @@ PROFILE = {
                 "Docker Compose",
                 "Nginx",
                 "Gunicorn",
+                "Uvicorn",
                 "Git",
                 "GitHub Actions",
                 "Pytest",
@@ -121,7 +131,7 @@ PROFILE = {
         },
         {
             "title": "AI-инструменты",
-            "note": "Ускорение разработки, рефакторинга и разбора сложных задач",
+            "note": "Исследование требований, проверка решений, разбор ошибок",
             "skills": [
                 "Cursor",
                 "GitHub Copilot",
@@ -131,11 +141,32 @@ PROFILE = {
     ],
     "education": [
         {
+            "degree": "Разработка машинного обучения",
+            "period": "Август 2026 — настоящее время",
+            "institution": "Учебный центр «ШИФТ» (АНО ДПО) — проект ШИФТ",
+            "description": (
+                "Участие в проекте ШИФТ по направлению «Разработка машинного обучения»."
+            ),
+        },
+        {
+            "degree": (
+                "Диплом об успешном окончании адаптационного курса "
+                "«Backend разработка банковских систем»"
+            ),
+            "period": "05.10.2026, Москва",
+            "institution": "ModulDev · Модульбанк",
+            "description": (
+                "Backend-стажировка (17.08–05.10.2026): проектирование и сборка единого банковского контура — "
+                "API, транзакционная логика, идемпотентность, внешние интеграции, обработка сбоев и наблюдаемость. "
+                "Итоговый проект: ReliaPay."
+            ),
+        },
+        {
             "degree": "Backend-разработчик (Python)",
             "period": "2026",
             "institution": "SkyPro — профессиональная переподготовка",
             "description": (
-                "Профессиональная переподготовка по дополнительной профессиональной программе 'Python-разработчик'."
+                "Профессиональная переподготовка по дополнительной профессиональной программе «Python-разработчик»."
             ),
         },
         {
@@ -162,25 +193,82 @@ PROFILE = {
             "title": "Python Backend Developer",
             "period": "Апрель 2026 — настоящее время",
             "company": 'ООО «Экосистема Альфа», Москва (удалённо)',
+            "projects": [
+                {
+                    "label": "PWA для владельцев питомцев",
+                    "stack": (
+                        "Python, FastAPI, Pydantic, SQLAlchemy, Alembic, PostgreSQL, "
+                        "Redis, Celery, S3, Uvicorn, JWT, Docker, Nginx, Git"
+                    ),
+                    "bullets": [
+                        (
+                            "Развиваю backend PWA-сервиса для владельцев питомцев: "
+                            "несколько питомцев, паспорт и прививки, календарь и напоминания, "
+                            "медицинские записи, загрузка документов, уведомления, экспорт и удаление данных"
+                        ),
+                        (
+                            "Вынесла доставку уведомлений (email, Web Push) и фоновую обработку в Celery/Redis"
+                        ),
+                        (
+                            "Реализовала загрузку и выдачу файлов через закрытое S3-совместимое хранилище"
+                        ),
+                        (
+                            "Участвую в разработке API синхронизации для офлайн-режима PWA"
+                        ),
+                        (
+                            "Согласовываю API с frontend, участвую в code review и командной разработке в Git"
+                        ),
+                    ],
+                },
+                {
+                    "label": "Платформа курьерской доставки",
+                    "stack": (
+                        "Python, Django, DRF, PostgreSQL, JWT, Redis, Celery, "
+                        "Telegram API, Nginx, Git, Docker"
+                    ),
+                    "bullets": [
+                        (
+                            "Развивала backend платформы автоматизации курьерской доставки: "
+                            "REST API, бизнес-логика заказов, сопровождение production"
+                        ),
+                        (
+                            "Переработала геолокацию курьеров: модели координат, API и обновление местоположения"
+                        ),
+                        (
+                            "Доработала жизненный цикл заказа: старт доставки и причины отмены — "
+                            "прозрачные статусы для клиентов и операций"
+                        ),
+                        (
+                            "Улучшила регистрацию/email-активацию; стабилизировала Celery на production"
+                        ),
+                    ],
+                },
+            ],
+        },
+        {
+            "title": "Backend-стажёр (ModulDev)",
+            "period": "17 августа — 5 октября 2026",
+            "company": "ModulDev · Модульбанк, Москва",
             "stack": (
-                "Python, Django, DRF, PostgreSQL, JWT, Redis, Celery, "
-                "Telegram API, Nginx, Git, Docker"
+                "Python, C#, PostgreSQL, Docker, JWT; "
+                "AI-инструменты — исследование требований, проверка решений, расследование ошибок"
             ),
             "bullets": [
                 (
-                    "Развиваю backend платформы автоматизации курьерской доставки: REST API, бизнес-логика заказов, сопровождение production"
+                    "Спроектировала и собрала единый банковский контур ReliaPay — систему, "
+                    "через которую безопасно принимаются запросы, выполняются операции и запускаются сценарии оплаты"
                 ),
                 (
-                    "Переработала подсистему геолокации курьеров: модели координат, API и обновление местоположения"
+                    "Проектировала API: вход по токену, проверка данных запроса, каталог операций, "
+                    "единый понятный формат ответов об успехе и ошибках"
                 ),
                 (
-                    "Доработала жизненный цикл заказа: старт доставки и причины отмены — прозрачные статусы для клиентов и операций"
+                    "Реализовывала надёжную обработку операций в базе: повтор того же запроса не создаёт дубликат, "
+                    "а при другом содержимом система возвращает конфликт"
                 ),
                 (
-                    "Улучшила регистрацию/email-активацию; стабилизировала Celery на production"
-                ),
-                (
-                    "Согласовываю API с frontend, участвую в code review и командной разработке в Git"
+                    "Настраивала обмен с внешними сервисами: очередь исходящих и входящих сообщений, "
+                    "доставку платежа провайдеру, восстановление после сбоев и мониторинг состояния системы"
                 ),
             ],
         },
@@ -189,8 +277,8 @@ PROFILE = {
             "period": "Март 2025 — настоящее время",
             "company": "Freelance & собственные проекты",
             "stack": (
-                "Django/DRF, FastAPI, PostgreSQL, SQLite, Redis, Celery, "
-                "aiogram, requests, httpx, Apache Airflow, pytest, Sentry, "
+                "Django/DRF, FastAPI, SQLAlchemy, Uvicorn, PostgreSQL, SQLite, Redis, "
+                "Kafka/aiokafka, Celery, aiogram, requests, httpx, Apache Airflow, pytest, Sentry, "
                 "Docker, Nginx, GitHub Actions, HTML, CSS, JavaScript"
             ),
             "bullets": [
@@ -252,6 +340,28 @@ PROFILE = {
             "readme_url": "/static/projects/oh-my-tea-overview.html",
         },
         {
+            "title": "ReliaPay",
+            "description": (
+                "Итоговый проект стажировки ModulDev (Модульбанк): единый банковский контур. "
+                "Единая точка входа для API-запросов и среда выполнения банковских операций и сценариев оплаты в PostgreSQL. "
+                "Спроектированы API и контракты, надёжная обработка операций без дублей, "
+                "доставка платежей во внешний сервис, обработка сбоев и мониторинг."
+            ),
+            "tags": [
+                "Python",
+                "C#",
+                "PostgreSQL",
+                "Docker",
+                "JWT",
+                "REST API",
+            ],
+            "categories": ["fullstack"],
+            "github": "https://github.com/simbarilion/ReliaPay",
+            "demo": None,
+            "featured": False,
+            "readme_url": "/static/projects/reliapay-overview.html?v=3",
+        },
+        {
             "title": "Habr Career Vacancy ETL",
             "description": (
                 "ETL-пайплайн на Apache Airflow для автоматического сбора вакансий Habr Career, "
@@ -286,18 +396,6 @@ PROFILE = {
             "github": "https://github.com/simbarilion/HabitLadder",
             "demo": None,
             "readme_url": "/static/projects/habit-ladder-overview.html",
-        },
-        {
-            "title": "ElectroNet",
-            "description": (
-                "REST API для управления иерархической сетью продаж электроники. Self-referencing модели, "
-                "кастомные permissions DRF и контроль задолженности между звеньями сети."
-            ),
-            "tags": ["Django", "DRF", "PostgreSQL", "pytest", "Docker"],
-            "categories": ["fullstack"],
-            "github": "https://github.com/simbarilion/ElectroNet",
-            "demo": None,
-            "readme_url": "/static/projects/electronet-overview.html",
         },
     ],
     "project_categories": [

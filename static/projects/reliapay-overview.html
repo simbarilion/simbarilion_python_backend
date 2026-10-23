@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReliaPay — обзор</title>
+    <meta http-equiv="Cache-Control" content="no-cache">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg: #060a12; --text: #e2e8f0; --muted: #94a3b8; --cyan: #00d4ff; --orange: #ff8c00; --border: rgba(56, 189, 248, 0.15); }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.65; padding: 1.25rem 1.5rem 2rem; font-size: 0.9rem; }
+        h1 { font-size: 1.35rem; margin-bottom: 0.35rem; background: linear-gradient(135deg, var(--text), var(--cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .subtitle { color: var(--muted); margin-bottom: 1.25rem; font-size: 0.85rem; }
+        h2 { font-size: 0.95rem; color: var(--cyan); margin: 1.25rem 0 0.6rem; font-family: 'JetBrains Mono', monospace; }
+        p { color: var(--muted); margin-bottom: 0.75rem; }
+        ul { padding-left: 1.1rem; color: var(--muted); margin-bottom: 0.75rem; }
+        li { margin-bottom: 0.5rem; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.78rem; margin: 0.5rem 0 1rem; }
+        th, td { border: 1px solid var(--border); padding: 0.45rem 0.6rem; text-align: left; vertical-align: top; }
+        th { color: var(--cyan); background: rgba(0, 212, 255, 0.06); }
+        .tag { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; padding: 0.2rem 0.5rem; margin: 0.15rem; border: 1px solid var(--border); border-radius: 4px; color: var(--cyan); }
+        a { color: var(--cyan); }
+        pre { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; background: rgba(0, 0, 0, 0.35); border: 1px solid var(--border); border-radius: 8px; padding: 0.75rem; color: var(--muted); margin: 0.5rem 0; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>ReliaPay</h1>
+    <p class="subtitle">Единый банковский контур — проект стажировки ModulDev (Модульбанк)</p>
+
+    <p>
+        ReliaPay — backend-система для банковских операций и сценариев оплаты.
+        Задача проекта: собрать один надёжный контур, через который снаружи безопасно
+        принимаются запросы, внутри выполняются операции, а наружу уходят платежи
+        во внешний сервис — с защитой от дублей и возможностью пережить сбой.
+    </p>
+    <p>
+        Все запросы идут через одну точку входа. Сервис проверяет, кто обратился и корректны ли данные,
+        затем выполняет нужную операцию в базе PostgreSQL. Клиент передаёт только название модуля,
+        действие и JSON с данными. Прямой доступ к SQL и внутренним функциям закрыт —
+        это безопаснее и проще для тех, кто вызывает API.
+    </p>
+
+    <h2>// Стек</h2>
+    <div>
+        <span class="tag">Python</span>
+        <span class="tag">C# / ASP.NET Core</span>
+        <span class="tag">PostgreSQL</span>
+        <span class="tag">Docker Compose</span>
+        <span class="tag">JWT</span>
+        <span class="tag">JSON Schema</span>
+        <span class="tag">Метрики и мониторинг</span>
+        <span class="tag">AI-инструменты</span>
+    </div>
+
+    <h2>// Что сделано</h2>
+    <ul>
+        <li>
+            <strong>Собран единый контур.</strong>
+            Снаружи — входной шлюз (единственный открытый порт). Дальше — API-сервис,
+            который проверяет запрос и запускает операцию в PostgreSQL.
+            Рядом работают фоновые воркеры (шаги сценария) и Python-сервисы,
+            которые общаются с внешним платёжным провайдером.
+        </li>
+        <li>
+            <strong>Спроектированы API и правила обмена данными.</strong>
+            Вход по токену, проверка тела запроса по схеме, каталог доступных операций,
+            единый формат ответов об успехе и ошибках. Описание API собирается из каталога операций,
+            чтобы контракт не расходился с реализацией.
+        </li>
+        <li>
+            <strong>Надёжная обработка операций.</strong>
+            Важные изменения в базе проходят в одной транзакции: либо операция фиксируется целиком,
+            либо откатывается. Так не остаётся «половинок» платежа или статуса.
+        </li>
+        <li>
+            <strong>Защита от повторных запросов.</strong>
+            Если клиент по сети отправил тот же запрос ещё раз — система не создаёт вторую операцию,
+            а возвращает прежний результат. Если при том же ключе пришли другие данные —
+            возвращается конфликт, а не тихий «второй платёж».
+        </li>
+        <li>
+            <strong>Интеграция с внешним провайдером.</strong>
+            Исходящие сообщения ставятся в очередь, отдельный сервис доставляет платёж,
+            другой принимает подтверждение и возвращает его в систему,
+            третий догоняет сообщения, которые не успели обработаться.
+            Так обмен с внешним миром не ломает основную логику операций.
+        </li>
+        <li>
+            <strong>Устойчивость к сбоям.</strong>
+            Если упал контейнер или провайдер временно недоступен, работа не теряется:
+            система продолжает с сохранённого состояния в базе.
+            Для проверки можно намеренно имитировать сбои и убедиться, что контур восстанавливается сам.
+        </li>
+        <li>
+            <strong>Мониторинг.</strong>
+            У запроса есть сквозной идентификатор, можно посмотреть цепочку шагов операции,
+            найти «застрявшие» процессы и снять метрики по очередям — чтобы доказывать исход фактами, а не догадками.
+        </li>
+    </ul>
+
+    <h2>// Архитектура (кратко)</h2>
+    <pre>
+Клиент (с токеном доступа)
+    → входной шлюз (единственный порт наружу)
+        → API-сервис (права, проверка данных, запуск операции)
+            → PostgreSQL (операции, сценарии оплаты, очереди)
+
+Фоновые воркеры      → выполняют шаги сценария
+Сервис доставки       → отправляет платёж внешнему провайдеру
+Сервис приёма ответа  → принимает подтверждение и возвращает в систему
+Сервис сверки         → догоняет сообщения, которые «зависли»
+    </pre>
+    <p>
+        Бизнес-логика и сценарии оплаты хранятся в PostgreSQL, а не «зашиты» в код каждого сервиса.
+        Поэтому новую операцию или сценарий можно добавить без пересборки основных сервисов.
+        Python-часть отвечает за доставку во внешний мир: она не решает, чем закончится операция,
+        и не выбирает ветку сценария — это остаётся на стороне базы и основного runtime.
+    </p>
+
+    <h2>// Цели надёжности</h2>
+    <table>
+        <tr><th>Цель</th><th>Как проверяется</th></tr>
+        <tr>
+            <td>Пережить сбой</td>
+            <td>
+                Останавливаем контейнер или отключаем внешнего провайдера.
+                Система продолжает работу из состояния в базе — без ручного вмешательства в SQL.
+            </td>
+        </tr>
+        <tr>
+            <td>Доказать исход</td>
+            <td>
+                Итог операции подтверждается сохранёнными фактами, статусами и метриками —
+                а не тем, что «подождали и надеемся на успех».
+            </td>
+        </tr>
+    </table>
+
+    <h2>// Репозиторий</h2>
+    <p>
+        Код и техническая документация:
+        <a href="https://github.com/simbarilion/ReliaPay" target="_blank" rel="noopener">github.com/simbarilion/ReliaPay</a>
+    </p>
+</body>
+</html>

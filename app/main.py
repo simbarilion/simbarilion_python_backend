@@ -14,8 +14,9 @@ ROOT_DIR = APP_DIR.parent
 STATIC_DIR = ROOT_DIR / "static"
 TEMPLATES_DIR = APP_DIR / "templates"
 
-# Browser cache for CSS/JS/images/overviews (7 days)
+# Long cache for CSS/JS/images; HTML overviews change often — no long cache
 STATIC_CACHE_HEADERS = {"Cache-Control": "public, max-age=604800"}
+STATIC_HTML_CACHE_HEADERS = {"Cache-Control": "no-cache"}
 
 jinja_env = Environment(
     loader=FileSystemLoader(TEMPLATES_DIR),
@@ -27,7 +28,10 @@ class CachedStaticFiles(StaticFiles):
     async def get_response(self, path: str, scope: Scope) -> Response:
         response = await super().get_response(path, scope)
         if response.status_code == 200:
-            response.headers.update(STATIC_CACHE_HEADERS)
+            if path.endswith(".html"):
+                response.headers.update(STATIC_HTML_CACHE_HEADERS)
+            else:
+                response.headers.update(STATIC_CACHE_HEADERS)
         return response
 
 

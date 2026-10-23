@@ -209,14 +209,30 @@
                     <h4 class="timeline-card__title">{{ job.title }}</h4>
                     <p class="timeline-card__period">{{ job.period }}</p>
                     <p class="timeline-card__company">{{ job.company }}</p>
-                    {% if job.stack | default(none) %}
-                    <p class="timeline-card__stack">{{ job.stack }}</p>
-                    {% endif %}
-                    <ul class="timeline-card__list">
-                        {% for item in job.bullets %}
-                        <li>{{ item }}</li>
+                    {% if job.projects is defined and job.projects %}
+                        {% for project in job.projects %}
+                        <div class="timeline-card__project">
+                            <p class="timeline-card__project-label">{{ project.label }}</p>
+                            {% if project.stack | default(none) %}
+                            <p class="timeline-card__stack">{{ project.stack }}</p>
+                            {% endif %}
+                            <ul class="timeline-card__list">
+                                {% for item in project.bullets %}
+                                <li>{{ item }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
                         {% endfor %}
-                    </ul>
+                    {% else %}
+                        {% if job.stack | default(none) %}
+                        <p class="timeline-card__stack">{{ job.stack }}</p>
+                        {% endif %}
+                        <ul class="timeline-card__list">
+                            {% for item in job.bullets %}
+                            <li>{{ item }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
                 </div>
                 {% endfor %}
             </div>
